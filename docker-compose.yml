@@ -1,0 +1,33 @@
+services:
+  astro:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://user:password@postgres:5432/mydatabase
+    volumes:
+      - .:/app
+      -  /app/node_modules
+    networks:
+      - mynetwork
+
+  postgres:
+    image: postgres:16
+    environment:
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_USER=root
+      - POSTGRES_DB=mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/DATABASE_URL
+
+volumes:
+  pgdata:
+networks:
+  mynetwork:
+    driver: bridge
