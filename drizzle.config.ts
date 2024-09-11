@@ -5,12 +5,12 @@ export default defineConfig({
   dialect: "postgresql",
   out: "./drizzle",
   dbCredentials: {
-    host: import.meta.env.DB_HOST,
-    database: import.meta.env.DB_NAME,
-    password: import.meta.env.DB_PASSWORD,
-    user: import.meta.env.DB_USER,
-    port: import.meta.env.DB_PORT,
-    ssl: import.meta.env.PRODUCTION,
+    host: "localhost",
+    database: "db",
+    user: "root",
+    password: "root",
+    port: 5432,
+    ssl: false,
   },
 });
 
