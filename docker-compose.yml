@@ -1,22 +1,22 @@
 services:
   astro:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "4321:4321"
     depends_on:
       - postgres
     environment:
       - DATABASE_URL=postgres://user:password@postgres:5432/mydatabase
     volumes:
-      - .:/app
-      -  /app/node_modules
+      - .:/harhar
+      - /harhar/node_modules
     networks:
       - mynetwork
 
   postgres:
-    image: postgres:16
+    image: postgres:latest
     environment:
       - POSTGRES_PASSWORD=example
       - POSTGRES_USER=root
