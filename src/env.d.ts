@@ -4,15 +4,15 @@
 /// <reference types="astro/client" />
 
 interface ImportMetaEnv {
-  readonly DB_NAME : string;
-  readonly DB_PASSWORD : string; // Only accessible server-side
-  readonly DB_USER:string;
-  readonly DB_HOST:string;
-  readonly DB_PORT:number;
-  // Add more environment variables as needed
+  readonly DB_NAME: string;
+  readonly DB_PASSWORD: string;
+  readonly DB_USER: string;
+  readonly DB_HOST: string;
+  readonly DB_PORT: number;
+
+  readonly PRODUCTION: boolean;
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
-
