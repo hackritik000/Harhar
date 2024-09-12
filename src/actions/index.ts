@@ -1,6 +1,13 @@
 export const prerender = true;
+import type { NewApiContext } from "@/interface/extended.interface";
+import { db } from "@/lib/db";
+import { userTable } from "@/schema/auth.schema";
+import { HASH_OPTION } from "@/utils/constant";
+import { TooManyRequest } from "@/utils/tooManyRequest";
+import { hash, verify } from "@node-rs/argon2";
 import { defineAction, ActionError } from "astro:actions";
 import { z } from "astro:schema";
+import { eq } from "drizzle-orm";
 
 export const server = {
   signIn: defineAction({
@@ -25,6 +32,34 @@ export const server = {
           "Password must contain at least one special character"
         ),
     }),
-    handler: async (input, ctx) => {},
+    handler: async (input, ctx: NewApiContext) => {
+      if (TooManyRequest(ctx)) {
+        throw new ActionError({
+          code: "TOO_MANY_REQUESTS",
+        });
+      }
+      const existingUser = await db
+        .select()
+        .from(userTable)
+        .where(eq(userTable.username, input.username));
+      if (!existingUser) {
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+          message: "username don't exist",
+        });
+      }
+
+      if (!existingUser[0]?.password_hash) {
+        throw new ActionError({
+          code: "BAD_REQUEST",
+          message: "password is not found",
+        });
+      }
+      const validPassword = await verify(
+        existingUser[0].password_hash,
+        input.password,
+        HASH_OPTION
+      );
+    },
   }),
 };

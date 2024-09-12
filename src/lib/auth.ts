@@ -1,7 +1,7 @@
 export const prerender = true;
 
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
-import { db } from "@/db";
+import { db } from "@/lib/db";
 import { sessionTable, userTable } from "@/schema/auth.schema";
 import { Lucia } from "lucia";
 
