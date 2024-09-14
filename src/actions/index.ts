@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { userTable } from "@/schema/auth.schema";
 import { HASH_OPTION } from "@/utils/constant";
 import { TooManyRequest } from "@/utils/tooManyRequest";
-import { hash, verify } from "@node-rs/argon2";
+import { verify } from "@node-rs/argon2";
 import { defineAction, ActionError } from "astro:actions";
 import { z } from "astro:schema";
 import { eq } from "drizzle-orm";
