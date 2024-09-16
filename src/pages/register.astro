@@ -17,21 +17,8 @@ import { actions } from "astro:actions";
 
     const registerForm = document.getElementById('register') as HTMLFormElement ;
     registerForm?.addEventListener('submit', async (e) => {
-        console.log("starting submit");
         e.preventDefault();
-        console.log("new submit");
-
-
         const formData = new FormData(registerForm);
-        console.log("formData", formData);
-        
-
-        // Convert FormData to a plain JavaScript object
-        // const data = {};
-        // formData.forEach((value, key) => {
-        //     data[key] = value;
-        // });
-
         try {
             // Pass the JSON data to actions.register
             const { data: responseData, error } = await actions.register(formData);

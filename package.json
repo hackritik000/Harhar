@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@types/eslint__js": "^8.42.3",
-    "@types/pg": "^8.11.9",
+    "@types/pg": "^8.11.10",
     "drizzle-kit": "^0.24.2",
     "eslint": "^9.9.1",
     "eslint-plugin-astro": "^1.2.3",

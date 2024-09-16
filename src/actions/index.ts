@@ -80,7 +80,7 @@ export const server = {
         sessionCookie.attributes
       );
 
-      return ctx.redirect("/dashboard");
+      return { session };
     },
   }),
 
@@ -108,7 +108,6 @@ export const server = {
       // ),
     }),
     handler: async (input, ctx: NewApiContext) => {
-      console.log("register");
       console.log(input.username, input.password);
       if (TooManyRequest(ctx)) {
         throw new ActionError({
@@ -117,19 +116,13 @@ export const server = {
       }
       const userId = generateIdFromEntropySize(10);
 
-      console.log("userId", userId);
-      // console.log("userTable", userTable);
-      const users = await db.select().from(userTable);
-      console.log("users", users);
       //check if user already exist
       const existingUser = await db
         .select()
         .from(userTable)
         .where(eq(userTable.username, input.username));
 
-      console.log("existingUser", existingUser);
-
-      if (existingUser) {
+      if (existingUser.length > 0) {
         throw new ActionError({
           code: "UNAUTHORIZED",
           message: "username already exist",
@@ -138,11 +131,14 @@ export const server = {
 
       const password_hash = await hash(input.password, HASH_OPTION);
 
+      console.log(password_hash);
       const newUser = await db.insert(userTable).values({
         id: userId,
         username: input.username,
         password_hash,
       });
+
+      console.log(newUser);
 
       const session = await lucia.createSession(userId, {});
       const sessionCookie = lucia.createSessionCookie(session.id);
