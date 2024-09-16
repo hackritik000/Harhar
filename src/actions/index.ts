@@ -1,16 +1,19 @@
 export const prerender = true;
 import type { NewApiContext } from "@/interface/extended.interface";
+import { lucia } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { userTable } from "@/schema/auth.schema";
 import { HASH_OPTION } from "@/utils/constant";
 import { TooManyRequest } from "@/utils/tooManyRequest";
-import { verify } from "@node-rs/argon2";
+import { hash, verify } from "@node-rs/argon2";
 import { defineAction, ActionError } from "astro:actions";
 import { z } from "astro:schema";
 import { eq } from "drizzle-orm";
+import { generateIdFromEntropySize } from "lucia";
 
 export const server = {
   signIn: defineAction({
+    accept: "form",
     input: z.object({
       username: z
         .string()
@@ -38,6 +41,9 @@ export const server = {
           code: "TOO_MANY_REQUESTS",
         });
       }
+
+      const userId = generateIdFromEntropySize(10);
+
       const existingUser = await db
         .select()
         .from(userTable)
@@ -60,6 +66,95 @@ export const server = {
         input.password,
         HASH_OPTION
       );
+      if (!validPassword) {
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+          message: "password don't match",
+        });
+      }
+      const session = await lucia.createSession(userId, {});
+      const sessionCookie = lucia.createSessionCookie(session.id);
+      ctx.cookies.set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes
+      );
+
+      return ctx.redirect("/dashboard");
+    },
+  }),
+
+  register: defineAction({
+    accept: "form",
+    input: z.object({
+      username: z
+        .string()
+        .min(3, "Username must be at least 3 characters long")
+        .max(30, "Username must be at most 30 characters long"),
+      // .regex(
+      // /^[a-zA-Z0-9_-]+$/,
+      // "Username can only contain letters, numbers, underscores, and dashes"
+      // )
+      password: z
+        .string()
+        .min(8, "Password must be at least 8 characters long")
+        .max(128, "Password must be at most 128 characters long"),
+      // .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      // .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      // .regex(/[0-9]/, "Password must contain at least one digit")
+      // .regex(
+      // /[@$!%*?&]/,
+      // "Password must contain at least one special character"
+      // ),
+    }),
+    handler: async (input, ctx: NewApiContext) => {
+      console.log("register");
+      console.log(input.username, input.password);
+      if (TooManyRequest(ctx)) {
+        throw new ActionError({
+          code: "TOO_MANY_REQUESTS",
+        });
+      }
+      const userId = generateIdFromEntropySize(10);
+
+      console.log("userId", userId);
+      // console.log("userTable", userTable);
+      const users = await db.select().from(userTable);
+      console.log("users", users);
+      //check if user already exist
+      const existingUser = await db
+        .select()
+        .from(userTable)
+        .where(eq(userTable.username, input.username));
+
+      console.log("existingUser", existingUser);
+
+      if (existingUser) {
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+          message: "username already exist",
+        });
+      }
+
+      const password_hash = await hash(input.password, HASH_OPTION);
+
+      const newUser = await db.insert(userTable).values({
+        id: userId,
+        username: input.username,
+        password_hash,
+      });
+
+      const session = await lucia.createSession(userId, {});
+      const sessionCookie = lucia.createSessionCookie(session.id);
+      ctx.cookies.set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes
+      );
+
+      console.log("register done");
+
+      return true;
     },
   }),
 };

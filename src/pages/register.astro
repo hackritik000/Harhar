@@ -1,0 +1,44 @@
+<form id="register">
+    <div>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username">
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password">
+    </div>
+    <div>
+        <button type="submit">Register</button>
+    </div>
+</form>
+
+<script>
+import { actions } from "astro:actions";
+
+    const registerForm = document.getElementById('register') as HTMLFormElement ;
+    registerForm?.addEventListener('submit', async (e) => {
+        console.log("starting submit");
+        e.preventDefault();
+        console.log("new submit");
+
+
+        const formData = new FormData(registerForm);
+        console.log("formData", formData);
+        
+
+        // Convert FormData to a plain JavaScript object
+        // const data = {};
+        // formData.forEach((value, key) => {
+        //     data[key] = value;
+        // });
+
+        try {
+            // Pass the JSON data to actions.register
+            const { data: responseData, error } = await actions.register(formData);
+            console.log("data", responseData);
+            console.log("Error = ", error);
+        } catch (error) {
+            console.log("Error is:", error);
+        }
+    });
+</script>

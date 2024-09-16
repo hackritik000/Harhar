@@ -1,0 +1,40 @@
+---
+
+---
+
+<form id="login">
+    <div>
+        <label for="username"></label>
+        <input type="text" id="username" name="username">
+    </div>
+    <div>
+        <label for="password"></label>
+        <input type="password" id="password" name="password">
+    </div>
+    <div>ritdaddasadik</div>
+    <div>
+        <button type="submit">Login</button>
+    </div>
+</form>
+
+<script>
+import { actions } from "astro:actions";
+console.log("jjjj")
+    const loginForm = document.getElementById('login');
+    loginForm?.addEventListener('submit', async (e)=>{
+        console.log("jjjj")
+
+        const form = e.target;
+        const formData = new FormData(form);
+        console.log("jjjj")
+
+        try{
+           const {data, error} = await actions.login(formData)
+           console.log(data.json)
+
+        }
+        catch (error){
+            console.error('Error: ', error)
+        }
+    })
+</script>

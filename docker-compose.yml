@@ -1,17 +1,17 @@
 services:
-  astro:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "4321:4321"
-    depends_on:
-      - postgres
-    volumes:
-      - .:/harhar
-      - /harhar/node_modules
-    networks:
-      - mynetwork
+  # astro:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "4321:4321"
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - .:/harhar
+  #     - /harhar/node_modules
+  #   networks:
+  #     - mynetwork
 
   postgres:
     image: postgres:latest
