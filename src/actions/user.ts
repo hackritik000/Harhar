@@ -36,6 +36,7 @@ export const user = {
         ),
     }),
     handler: async (input, ctx: NewApiContext) => {
+      console.log('login started')
       if (TooManyRequest(ctx)) {
         throw new ActionError({
           code: "TOO_MANY_REQUESTS",
@@ -80,8 +81,7 @@ export const user = {
         sessionCookie.attributes
       );
 
-      alert("login success");
-
+      console.log('login successfull')
       return { session };
     },
   }),
@@ -110,25 +110,12 @@ export const user = {
         ),
     }),
     handler: async (input, ctx: NewApiContext) => {
-      console.log(input.username, input.password);
       if (TooManyRequest(ctx)) {
         throw new ActionError({
           code: "TOO_MANY_REQUESTS",
         });
       }
       const userId = generateIdFromEntropySize(10);
-
-      console.log(import.meta.env.DB_HOST);
-      console.log("userId", userId);
-
-      //check if user already exist
-      try {
-        const ranjeet = await db.select().from(userTable);
-
-        console.log("ranjeet", ranjeet);
-      } catch (error) {
-        console.log("error", error);
-      }
       const existingUser = await db
         .select()
         .from(userTable)
@@ -143,14 +130,11 @@ export const user = {
 
       const password_hash = await hash(input.password, HASH_OPTION);
 
-      console.log(password_hash);
-      const newUser = await db.insert(userTable).values({
+      await db.insert(userTable).values({
         id: userId,
         username: input.username,
         password_hash,
       });
-
-      console.log(newUser);
 
       const session = await lucia.createSession(userId, {});
       const sessionCookie = lucia.createSessionCookie(session.id);
@@ -159,8 +143,6 @@ export const user = {
         sessionCookie.value,
         sessionCookie.attributes
       );
-
-      console.log("register done");
 
       return true;
     },
