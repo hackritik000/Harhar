@@ -20,8 +20,7 @@ import { actions } from "astro:actions";
         e.preventDefault();
         const formData = new FormData(registerForm);
         try {
-            // Pass the JSON data to actions.register
-            const { data: responseData, error } = await actions.register(formData);
+            const { data: responseData, error } = await actions.user.register(formData);
             console.log("data", responseData);
             console.log("Error = ", error);
         } catch (error) {

@@ -1,5 +1,5 @@
 declare module "astro:actions" {
-	type Actions = typeof import("/home/ritikparihar/Project/Harhar/src/actions")["server"];
+	type Actions = typeof import("D:/New_folder/Harhar/src/actions")["server"];
 
 	export const actions: Actions;
 }

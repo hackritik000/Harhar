@@ -20,18 +20,18 @@
 <script>
 import { actions } from "astro:actions";
 console.log("jjjj")
-    const loginForm = document.getElementById('login');
+    const loginForm = document.getElementById('login') as HTMLFormElement;
     loginForm?.addEventListener('submit', async (e)=>{
+        e.preventDefault();
         console.log("jjjj")
-
-        const form = e.target;
-        const formData = new FormData(form);
+        const formData = new FormData(loginForm);
         console.log("jjjj")
 
         try{
-           const {data, error} = await actions.login(formData)
-           console.log(data.json)
-
+           const {data, error} = await actions.user.login(formData)
+           console.log(data)
+           console.log(error);
+           alert('Login successful')
         }
         catch (error){
             console.error('Error: ', error)
