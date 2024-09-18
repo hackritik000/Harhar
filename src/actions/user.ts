@@ -1,5 +1,4 @@
 import { ActionError, defineAction } from "astro:actions";
-export const prerender = true;
 import type { NewApiContext } from "@/interface/extended.interface";
 import { lucia } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -36,7 +35,6 @@ export const user = {
         ),
     }),
     handler: async (input, ctx: NewApiContext) => {
-      console.log("login started");
       if (TooManyRequest(ctx)) {
         throw new ActionError({
           code: "TOO_MANY_REQUESTS",
@@ -49,24 +47,28 @@ export const user = {
         .select()
         .from(userTable)
         .where(eq(userTable.username, input.username));
-      if (!existingUser) {
+      if (!existingUser || existingUser.length <= 0) {
         throw new ActionError({
           code: "UNAUTHORIZED",
           message: "username don't exist",
         });
       }
-
+      console.log(existingUser);
       if (!existingUser[0]?.password_hash) {
         throw new ActionError({
           code: "BAD_REQUEST",
           message: "password is not found",
         });
       }
+
+      console.log("before existingUser");
       const validPassword = await verify(
         existingUser[0].password_hash,
         input.password,
         HASH_OPTION
       );
+
+      console.log("after validpassword");
       if (!validPassword) {
         throw new ActionError({
           code: "UNAUTHORIZED",
