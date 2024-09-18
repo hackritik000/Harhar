@@ -1,6 +1,6 @@
-export const prerender = true;
+export const prerender = false;
 import { user } from "./user";
 
 export const server = {
-  user
+  user,
 };

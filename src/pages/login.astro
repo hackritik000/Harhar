@@ -1,20 +1,35 @@
 ---
-import { actions } from 'astro:actions';
+export const prerender = false;
+import { isInputError } from "astro:actions";
+import { actions } from "astro:actions";
+import Layout from '../layouts/Layout.astro';
 
-const result = Astro.getActionResult(actions.user.login);
-console.log(result?.error)
+const result = Astro.getActionResult(actions.user.login)
+const inputError = isInputError(result?.error) ? result.error.fields : {};
+
 ---
-
-<form action={actions.user.login}>
-    <div>
-        <label for="username"></label>
-        <input type="text" id="username" name="username">
-    </div>
-    <div>
-        <label for="password"></label>
-        <input type="password" id="password" name="password">
-    </div>
-    <div>
-        <button type="submit">Login</button>
-    </div>
-</form>
+<Layout title="helo">
+  <form method="post" action={actions.user.login}>
+      <div>
+          <label for="username">Username</label>
+          {
+            inputError.username 
+            ? <input transition:persist type="text" id="username" name="username"> 
+            : <input type="text" id="username" name="username">
+          }
+          {inputError.username?.at(0)}
+      </div>
+      <div>
+          <label for="password">Password</label>
+          {
+            inputError.password 
+            ? <input transition:persist type="password" id="password" name="password">
+            : <input type="password" id="password" name="password">
+          }
+          {inputError.password?.at(0)}
+      </div>
+      <div>
+          <button type="submit">Login</button>
+      </div>
+  </form>
+</Layout>

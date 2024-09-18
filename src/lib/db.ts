@@ -1,4 +1,4 @@
-export const prerender = true;
+export const prerender = false;
 
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";

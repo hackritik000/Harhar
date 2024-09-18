@@ -4,6 +4,7 @@ interface Props {
 }
 
 const { title } = Astro.props;
+import { ViewTransitions } from 'astro:transitions';
 ---
 
 <!doctype html>
@@ -14,7 +15,8 @@ const { title } = Astro.props;
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
+    <title>{title}</title> 
+    <ViewTransitions />
 	</head>
 	<body>
 		<slot />
@@ -35,6 +37,7 @@ const { title } = Astro.props;
 	html {
 		font-family: system-ui, sans-serif;
 		background: #13151a;
+    color: white;
 	}
 	code {
 		font-family:

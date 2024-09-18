@@ -36,7 +36,7 @@ export const user = {
         ),
     }),
     handler: async (input, ctx: NewApiContext) => {
-      console.log('login started')
+      console.log("login started");
       if (TooManyRequest(ctx)) {
         throw new ActionError({
           code: "TOO_MANY_REQUESTS",
@@ -81,7 +81,7 @@ export const user = {
         sessionCookie.attributes
       );
 
-      console.log('login successfull')
+      console.log("login successfull");
       return { session };
     },
   }),
