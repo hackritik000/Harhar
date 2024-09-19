@@ -41,8 +41,6 @@ export const user = {
         });
       }
 
-      const userId = generateIdFromEntropySize(10);
-
       const existingUser = await db
         .select()
         .from(userTable)
@@ -53,7 +51,7 @@ export const user = {
           message: "username don't exist",
         });
       }
-      console.log(existingUser);
+
       if (!existingUser[0]?.password_hash) {
         throw new ActionError({
           code: "BAD_REQUEST",
@@ -61,29 +59,26 @@ export const user = {
         });
       }
 
-      console.log("before existingUser");
       const validPassword = await verify(
         existingUser[0].password_hash,
         input.password,
         HASH_OPTION
       );
 
-      console.log("after validpassword");
       if (!validPassword) {
         throw new ActionError({
           code: "UNAUTHORIZED",
           message: "password don't match",
         });
       }
-      const session = await lucia.createSession(userId, {});
+      const session = await lucia.createSession(existingUser[0]?.id, {});
       const sessionCookie = lucia.createSessionCookie(session.id);
       ctx.cookies.set(
         sessionCookie.name,
         sessionCookie.value,
         sessionCookie.attributes
       );
-
-      console.log("login successfull");
+      // console.log
       return { session };
     },
   }),
