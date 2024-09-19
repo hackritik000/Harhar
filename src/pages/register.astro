@@ -1,30 +1,37 @@
-<form id="register">
+---
+export const prerender = false;
+import Layout from "@/layouts/Layout.astro";
+import { isInputError } from "astro:actions";
+import { actions} from "astro:actions"
+
+const result = Astro.getActionResult(actions.user.register)
+const inputError = isInputError(result?.error) ? result.error.fields : null;
+---
+<Layout title="Register">
+ <div class="error">{result?.error && !inputError && result.error.message}</div>
+<form id="register" method="post" action={'/login' + actions.user.register}>
+    {}
     <div>
         <label for="username">Username</label>
-        <input type="text" id="username" name="username">
+        {
+            inputError?.username
+            ?  <input type="text" id="username" name="username"/>
+            :  <input transition:persist type="text" id="username" name="username"/>
+        }
+        {inputError?.username?.at(0)}
+       
     </div>
     <div>
         <label for="password">Password</label>
-        <input type="password" id="password" name="password">
+        {
+            inputError?.password
+            ? <input type="password" id="password" name="password"/>
+            : <input transition:persist type="password" id="password" name="password"/>
+        }
+        {inputError?.password?.at(0)}
     </div>
     <div>
         <button type="submit">Register</button>
     </div>
 </form>
-
-<script>
-import { actions } from "astro:actions";
-
-    const registerForm = document.getElementById('register') as HTMLFormElement ;
-    registerForm?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(registerForm);
-        try {
-            const { data: responseData, error } = await actions.user.register(formData);
-            console.log("data", responseData);
-            console.log("Error = ", error);
-        } catch (error) {
-            console.log("Error is:", error);
-        }
-    });
-</script>
+</Layout>

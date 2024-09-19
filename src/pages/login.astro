@@ -5,19 +5,23 @@ import { actions } from "astro:actions";
 import Layout from '../layouts/Layout.astro';
 
 const result = Astro.getActionResult(actions.user.login)
-console.log(result?.error.message)
 const inputError = isInputError(result?.error) ? result.error.fields : {};
-console.log(inputError)
+const user = Astro.locals.user;
+console.log(user)
+if (user) {
+	return Astro.redirect("/");
+
+}
 ---
 <Layout title="helo">
   <div class="error">{result?.error && result.error.message}</div>
   <form method="post" action={actions.user.login}>
       <div>
-          <label for="username">Username</label>
+         <label for="username">Username</label>
           {
             inputError.username 
-            ? <input type="text" id="username" name="username"> 
-            : <input transition:persist type="text" id="username" name="username">
+            ? <input type="text" id="username" name="username" /> 
+            : <input transition:persist type="text" id="username" name="username" />
           }
           {inputError.username?.at(0)}
       </div>
@@ -25,8 +29,8 @@ console.log(inputError)
           <label for="password">Password</label>
           {
             inputError.password 
-            ? <input type="password" id="password" name="password">
-            : <input transition:persist type="password" id="password" name="password">
+            ? <input type="password" id="password" name="password" />
+            : <input transition:persist type="password" id="password" name="password"/>
           }
           {inputError.password?.at(0)}
       </div>
