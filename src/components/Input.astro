@@ -1,11 +1,11 @@
 ---
-const { id, name, Class, placeholder, InputError } = Astro.props;
+const { id, name, Class, placeholder, inputError } = Astro.props;
 ---
 
 <div>
   <label for={id}>{name}</label>
   {
-    InputError[name] ? (
+    inputError[name] ? (
       <input
         type="text"
         id={id}
@@ -24,5 +24,14 @@ const { id, name, Class, placeholder, InputError } = Astro.props;
       />
     )
   }
-  {InputError[name]?.at(0)}
+
+      <!-- <input -->
+      <!--   transition:persist -->
+      <!--   type="text" -->
+      <!--   id={id}         -->
+      <!--   name={name} -->
+      <!--   class={Class} -->
+      <!--   placeholder={placeholder} -->
+      <!-- /> -->
+  {inputError[name]?.at(0)}
 </div>

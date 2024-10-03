@@ -20,17 +20,18 @@ const inputError = isInputError(result?.error) ? result.error.fields : {};
         name="business_name"
         id="business_name"
         placeholder="My Biz"
-        InputError={inputError}
+        inputError={inputError}
       />
-      <Input name="owner_name" id="owner_name" />
-      <Input name="email" id="email" />
-      <Input name="phone" id="phone" />
-      <Input name="category" id="category" />
-      <Input name="address" id="address" />
-      <Input name="city" id="city" />
-      <Input name="website_link" id="website_link" />
-      <Input name="google_map_iframe" id="google_map_iframe" />
-      <Input name="business_description" id="business_description" />
+      {inputError['owner_name']?.at(0)}
+      <Input name="owner_name" id="owner_name" inputError={inputError} />
+      <Input name="email" id="email" inputError={inputError} />
+      <Input name="phone" id="phone" inputError={inputError} />
+      <Input name="category" id="category" inputError={inputError} />
+      <Input name="address" id="address" inputError={inputError} />
+      <Input name="city" id="city" inputError={inputError} />
+      <Input name="website_link" id="website_link" inputError={inputError} />
+      <Input name="google_map_iframe" id="google_map_iframe" inputError={inputError} />
+      <Input name="business_description" id="business_description" inputError={inputError} />
 
       <button type="submit">Add List</button>
     </form>
