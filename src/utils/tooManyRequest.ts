@@ -1,8 +1,8 @@
-import type { NewApiContext } from "@/interface/extended.interface";
+import type { NewApiContext } from '@/interface/extended.interface';
 import {
   TOO_MANY_REQUEST_COUNT_LIMIT,
   TOO_MANY_REQUEST_TIME_LIMIT,
-} from "./constant";
+} from './constant';
 
 export const TooManyRequest = (context: NewApiContext): boolean => {
   const currentTime = Date.now();

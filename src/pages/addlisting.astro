@@ -1,0 +1,38 @@
+---
+export const prerender = false;
+import Input from "@/components/Input.astro";
+import { isInputError } from "astro:actions";
+import { actions } from "astro:actions";
+const result = Astro.getActionResult(actions.business.addListing);
+const inputError = isInputError(result?.error) ? result.error.fields : {};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form action={actions.business.addListing} method="post">
+      <Input
+        name="business_name"
+        id="business_name"
+        placeholder="My Biz"
+        InputError={inputError}
+      />
+      <Input name="owner_name" id="owner_name" />
+      <Input name="email" id="email" />
+      <Input name="phone" id="phone" />
+      <Input name="category" id="category" />
+      <Input name="address" id="address" />
+      <Input name="city" id="city" />
+      <Input name="website_link" id="website_link" />
+      <Input name="google_map_iframe" id="google_map_iframe" />
+      <Input name="business_description" id="business_description" />
+
+      <button type="submit">Add List</button>
+    </form>
+  </body>
+</html>

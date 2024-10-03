@@ -1,9 +1,9 @@
 export const prerender = true;
 
-import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
-import { db } from "@/lib/db";
-import { sessionTable, userTable } from "@/schema/auth.schema";
-import { Lucia } from "lucia";
+import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
+import { db } from '@/lib/db';
+import { sessionTable, userTable } from '@/schema/auth.schema';
+import { Lucia } from 'lucia';
 
 const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable);
 
@@ -20,7 +20,7 @@ export const lucia = new Lucia(adapter, {
   },
 });
 
-declare module "lucia" {
+declare module 'lucia' {
   interface Register {
     Lucia: typeof lucia;
     DatabaseUserAttributes: DatabaseUserAttributes;

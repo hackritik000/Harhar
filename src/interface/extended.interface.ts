@@ -1,4 +1,4 @@
-import type { ActionAPIContext } from "astro:actions";
+import type { ActionAPIContext } from 'astro:actions';
 
 export interface NewApiContext extends ActionAPIContext {
   requestMetadata?: {

@@ -1,0 +1,28 @@
+---
+const { id, name, Class, placeholder, InputError } = Astro.props;
+---
+
+<div>
+  <label for={id}>{name}</label>
+  {
+    InputError[name] ? (
+      <input
+        type="text"
+        id={id}
+        name={name}
+        class={Class}
+        placeholder={placeholder}
+      />
+    ) : (
+      <input
+        transition:persist
+        type="text"
+        id={id}        
+        name={name}
+        class={Class}
+        placeholder={placeholder}
+      />
+    )
+  }
+  {InputError[name]?.at(0)}
+</div>
