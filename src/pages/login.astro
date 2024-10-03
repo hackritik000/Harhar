@@ -6,11 +6,14 @@ import Layout from '../layouts/Layout.astro';
 
 const result = Astro.getActionResult(actions.user.login)
 const inputError = isInputError(result?.error) ? result.error.fields : {};
-const user = Astro.cookies;
-console.log(user)
-// if (user) {
-// 	return Astro.redirect("/");
-// }
+const user = Astro.locals.user;
+if (!user) {
+  console.log('user not found')
+}
+else{
+    console.log("user found")
+  return Astro.redirect("/")
+}
 ---
 <Layout title="helo">
  <div class="error">{result?.error && !inputError && result.error.message}</div>

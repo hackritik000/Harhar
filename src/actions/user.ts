@@ -144,4 +144,23 @@ export const user = {
       return true;
     },
   }),
+  logOut: defineAction({
+    accept: "form",
+    handler: async (_, ctx: NewApiContext) => {
+
+      if (!ctx.locals.session) {
+        return new Response(null, {
+          status: 401
+        });
+      }
+      await lucia.invalidateSession(ctx.locals.session.id);
+
+
+      const sessionCookie = lucia.createBlankSessionCookie();
+      ctx.cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+
+      return true;
+
+    }
+  })
 };
