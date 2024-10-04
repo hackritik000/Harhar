@@ -1,9 +1,18 @@
 ---
 export const prerender = false;
 import Layout from "../layouts/Layout.astro";
-const result = Astro.getActionResult(actions.newsletter);
+import { actions } from "astro:actions";
+const {data,error} = await Astro.callAction(actions.listing.showAllListing,{})
+console.log(data    )
 ---
 
 <Layout title="listing.">
-  <div></div>
+  {
+    data?.map((listing)=>(
+      <div>
+      <h5>Business Name :{listing.businessName}</h5>
+      <h5>OwnerName Name :{listing.ownerName}</h5>
+      </div>
+    ))
+  }
 </Layout>

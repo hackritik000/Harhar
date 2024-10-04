@@ -1,6 +1,6 @@
 import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
-import { businessDetails } from "@/schema/bussness.schema";
+import { businessDetails } from "@/schema/business.schema";
 
 import { db } from "@/lib/db";
 import { TooManyRequest } from "@/utils/tooManyRequest";
@@ -31,27 +31,27 @@ export const business = {
     handler: async (input, ctx) => {
       if (TooManyRequest(ctx)) {
         throw new ActionError({
-          code: 'TOO_MANY_REQUESTS',
+          code: "TOO_MANY_REQUESTS",
         });
       }
       console.log(input);
       const listing = await db.insert(businessDetails).values(input);
-
     },
   }),
   showListing: defineAction({
     accept: "json",
-
     handler: async (input, ctx) => {
       if (TooManyRequest(ctx)) {
         throw new ActionError({
-          code: 'TOO_MANY_REQUESTS',
+          code: "TOO_MANY_REQUESTS",
         });
       }
 
-      const listingDetails = await db.select().from(businessDetails).where(eq(businessDetails.id,input.listingId))
-      console.log(listingDetails)
-
-    }
-  })
+      const listingDetails = await db
+        .select()
+        .from(businessDetails)
+        .where(eq(businessDetails.id, input.listingId));
+      console.log(listingDetails);
+    },
+  }),
 };

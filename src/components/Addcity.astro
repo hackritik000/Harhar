@@ -1,0 +1,21 @@
+---
+import { checkAdminUser } from "@/utils/checkAdminUser";
+import Input from "./Input.astro";
+import { actions } from "astro:actions";
+import { isInputError } from "astro:actions";
+const result = Astro.getActionResult(actions.smallActions.showAddCity)
+const inputError = isInputError(result?.error) ? result.error.fields : {};
+
+const user = Astro.locals.user;
+let isAdmin = false;
+if (user) {
+  isAdmin = await checkAdminUser(user.id)
+}
+---
+
+<form method="post" action={actions.smallActions.showAddCity}>
+  <Input name="city" id="city"inputError={inputError                } />
+  {isAdmin&&<button type="submit">Add city</button>}
+</form>
+
+
