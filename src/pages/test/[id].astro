@@ -1,0 +1,18 @@
+---
+export const prerender = false;
+import Layout from "@/layouts/Layout.astro";
+import { actions } from "astro:actions";
+const { id: listingId } = Astro.params;
+console.log(listingId);
+const { data, error } = await Astro.callAction(actions.business.showListing, {
+  listingId,
+});
+console.log(data);
+---
+
+<Layout title="Register">
+  <!-- <div class="error">{result?.error && !inputError && result.error.message}</div> -->
+  <form id="register" method="post" action={actions.business.showListing}>
+    <button>ok</button>
+  </form>
+</Layout>
