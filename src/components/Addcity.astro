@@ -12,10 +12,11 @@ if (user) {
   isAdmin = await checkAdminUser(user.id)
 }
 ---
-
-<form method="post" action={actions.smallActions.showAddCity}>
+{isAdmin&&
+(<form method="post" action={actions.smallActions.showAddCity}>
   <Input name="city" id="city"inputError={inputError                } />
-  {isAdmin&&<button type="submit">Add city</button>}
-</form>
+  
+</form>)
+}
 
 

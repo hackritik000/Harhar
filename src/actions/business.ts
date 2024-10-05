@@ -1,10 +1,10 @@
 import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
 import { businessDetails } from "@/schema/business.schema";
-
 import { db } from "@/lib/db";
 import { TooManyRequest } from "@/utils/tooManyRequest";
 import { eq } from "drizzle-orm";
+import { checkValidUser } from "@/utils/checkValidUser";
 export const business = {
   addBusiness: defineAction({
     accept: "form",
@@ -34,8 +34,14 @@ export const business = {
           code: "TOO_MANY_REQUESTS",
         });
       }
-      console.log(input);
-      const listing = await db.insert(businessDetails).values(input);
+
+
+
+      const listing = await db.insert(businessDetails).values({
+        ...input,
+        userId: ctx.locals.user?.id,
+
+      });
     },
   }),
   showListing: defineAction({
@@ -46,12 +52,23 @@ export const business = {
           code: "TOO_MANY_REQUESTS",
         });
       }
-
+      let isOwner = false;
+      if (ctx.locals.user?.id) {
+        isOwner = await checkValidUser(ctx.locals.user?.id, input.listingId);
+      }
       const listingDetails = await db
         .select()
         .from(businessDetails)
         .where(eq(businessDetails.id, input.listingId));
-      console.log(listingDetails);
+      return { isOwner, ...listingDetails[0] };
+    },
+  }),
+
+  deleteListing: defineAction({
+    accept: "form",
+    input: z.object({}),
+    handler: async (input, ctx) => {
+
     },
   }),
 };

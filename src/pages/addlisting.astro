@@ -4,10 +4,8 @@ import Input from "@/components/Input.astro";
 import { isInputError } from "astro:actions";
 import Addcity from "@/components/Addcity.astro";
 import { actions } from "astro:actions";
-const result = Astro.getActionResult(actions.business.addListing);
+const result = Astro.getActionResult(actions.business.addBusiness);
 const inputError = isInputError(result?.error) ? result.error.fields : {};
-
-
 ---
 
 <!doctype html>
@@ -31,7 +29,7 @@ const inputError = isInputError(result?.error) ? result.error.fields : {};
       <Input name="category" id="category" inputError={inputError} />
       <Input name="address" id="address" inputError={inputError} />
       <Input name="city" id="city" inputError={inputError} />
-      
+
       <Input name="websiteLink" id="website_link" inputError={inputError} />
       <Input
         name="googleMapIframe"
@@ -48,5 +46,4 @@ const inputError = isInputError(result?.error) ? result.error.fields : {};
     </form>
     <Addcity />
   </body>
-  <script></script>
 </html>
