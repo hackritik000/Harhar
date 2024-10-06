@@ -17,7 +17,7 @@ export const listing = {
   showAllListing: defineAction({
     accept: "json",
     input: z.object({}),
-    handler: async (input, ctx) => {
+    handler: async (_, ctx) => {
       if (TooManyRequest(ctx)) {
         throw new ActionError({
           code: "TOO_MANY_REQUESTS",
@@ -30,6 +30,4 @@ export const listing = {
       return listingDetails;
     },
   }),
-
-  
 };

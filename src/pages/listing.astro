@@ -2,10 +2,7 @@
 export const prerender = false;
 import Layout from "../layouts/Layout.astro";
 import { actions } from "astro:actions";
-const { data, error } = await Astro.callAction(
-  actions.listing.showAllListing,
-  {},
-);
+const { data } = await Astro.callAction(actions.listing.showAllListing, {});
 console.log(data);
 ---
 
@@ -14,7 +11,7 @@ console.log(data);
     {
       data?.map((listing) => (
         <a
-          href={`test/${listing.id}`}
+          href={`showbusiness/${listing.id}`}
           style="border: 2px solid pink; margin: 10px; padding: 10px;"
         >
           <h5>Business Name :{listing.businessName}</h5>
@@ -32,7 +29,7 @@ console.log(data);
 </Layout>
 
 <style>
-  a{
+  a {
     display: block;
   }
 </style>

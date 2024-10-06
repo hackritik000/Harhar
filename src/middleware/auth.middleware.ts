@@ -1,10 +1,6 @@
 export const prerender = false;
-
 import { lucia } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { userTable } from "@/schema/auth.schema";
 import { defineMiddleware } from "astro:middleware";
-import { eq } from "drizzle-orm";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const sessionId = context.cookies.get(lucia.sessionCookieName)?.value ?? null;

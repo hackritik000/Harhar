@@ -1,5 +1,5 @@
 ---
-const { id, name, Class, placeholder, inputError } = Astro.props;
+const { id, name, Class, placeholder, value="", inputError } = Astro.props;
 ---
 
 <div>
@@ -21,6 +21,7 @@ const { id, name, Class, placeholder, inputError } = Astro.props;
         name={name}
         class={Class}
         placeholder={placeholder}
+        value={value}
       />
     )
   }

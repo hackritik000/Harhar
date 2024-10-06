@@ -35,13 +35,17 @@ export const business = {
         });
       }
 
+      if (!ctx.locals.user?.id) {
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+        });
+      }
 
-
-      const listing = await db.insert(businessDetails).values({
+      await db.insert(businessDetails).values({
         ...input,
         userId: ctx.locals.user?.id,
-
       });
+      return;
     },
   }),
   showListing: defineAction({
@@ -66,9 +70,57 @@ export const business = {
 
   deleteListing: defineAction({
     accept: "form",
-    input: z.object({}),
+    input: z.object({
+      listingId: z.string(),
+    }),
     handler: async (input, ctx) => {
+      // console.log("Hello ")
+      // console.log(input)
+      if (TooManyRequest(ctx)) {
+        throw new ActionError({
+          code: "TOO_MANY_REQUESTS",
+        });
+      }
+      const deletedListing = await db
+        .delete(businessDetails)
+        .where(eq(businessDetails.id, input.listingId));
 
+      // console.log(deletedListing,"______________________-----______________--_______                        ")
+
+      if (!deletedListing) {
+        throw new ActionError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "something went wrong while deleteing listing",
+        });
+      }
+      return;
+    },
+  }),
+
+  editListing: defineAction({
+    accept: "json",
+    input: z.object({ id: z.string() }),
+    handler: async (input, ctx) => {
+      // console.log("_____________++++_____++++____+++_____+++",input.id);
+
+      if (TooManyRequest(ctx)) {
+        throw new ActionError({
+          code: "TOO_MANY_REQUESTS",
+        });
+      }
+
+      const listing = await db
+        .select()
+        .from(businessDetails)
+        .where(eq(businessDetails.id, input.id));
+      if (!listing) {
+        throw new ActionError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "something went wrong while editing listing",
+        });
+      }
+
+      return listing;
     },
   }),
 };

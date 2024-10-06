@@ -4,7 +4,9 @@ export const businessDetails = pgTable("business_details", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
   businessName: varchar("business_name", { length: 255 }).notNull(),
   ownerName: varchar("owner_name", { length: 50 }).notNull(),
-  userId:text("user_id").notNull().references(()=>userTable.id),
+  userId: text("user_id")
+    .notNull()
+    .references(() => userTable.id),
   category: varchar("category", { length: 100 }).notNull(),
   businessPhotos: varchar("business_photos", { length: 255 }),
   address: text("address"),

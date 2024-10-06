@@ -1,0 +1,95 @@
+---
+export const prerender = false;
+import Input from "@/components/Input.astro";
+import { isInputError } from "astro:actions";
+import Addcity from "@/components/Addcity.astro";
+import { actions } from "astro:actions";
+// const result = Astro.getActionResult(actions.business.editListing);
+const { id } = Astro.params;
+// const result = Astro.getActionResult(actions.business.deleteListing);
+
+const result = await Astro.callAction(actions.business.editListing, {
+  id,
+});
+
+const inputError = isInputError(result?.error) ? result.error.fields : {};
+let listingData = result.data[0]
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form action={"/listing" + actions.business.addBusiness} method="post">
+      <Input
+        name="businessName"
+        value={listingData?.businessName}
+        id="business_name"
+        placeholder="My Biz"
+        inputError={inputError}
+      />
+      <Input
+        name="ownerName"
+        value={listingData?.ownerName}
+        id="owner_name"
+        inputError={inputError}
+      />
+      <Input
+        name="email"
+        value={listingData?.email}
+        id="email"
+        inputError={inputError}
+      />
+      <Input
+        name="phone"
+        id="phone"
+        value={listingData?.email}
+        inputError={inputError}
+      />
+      <Input
+        name="category"
+        id="category"
+        value={listingData?.category}
+        inputError={inputError}
+      />
+      <Input
+        name="address"
+        id="address"
+        value={listingData?.address}
+        inputError={inputError}
+      />
+      <Input
+        name="city"
+        id="city"
+        value={listingData?.city}
+        inputError={inputError}
+      />
+
+      <Input
+        name="websiteLink"
+        value={listingData?.websiteLink}
+        id="website_link"
+        inputError={inputError}
+      />
+      <Input
+        name="googleMapIframe"
+        value={listingData?.googleMapIframe}
+        id="google_map_iframe"
+        inputError={inputError}
+      />
+      <Input
+        name="businessDescription"
+        value={listingData?.businessDescription}
+        id="business_description"
+        inputError={inputError}
+      />
+
+      <button type="submit">Update Details</button>
+    </form>
+    <Addcity />
+  </body>
+</html>
