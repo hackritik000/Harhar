@@ -3,7 +3,6 @@ export const prerender = false;
 import Layout from "../layouts/Layout.astro";
 import { actions } from "astro:actions";
 const { data } = await Astro.callAction(actions.listing.showAllListing, {});
-console.log(data);
 ---
 
 <Layout title="listing.">

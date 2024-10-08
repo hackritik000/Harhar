@@ -123,4 +123,37 @@ export const business = {
       return listing;
     },
   }),
+
+  updateListing: defineAction({
+    accept: "form",
+    input: z.object({
+      listing_id: z.string(),
+      businessName: z
+        .string()
+        .min(3, "Business must be at least 3 characters long")
+        .max(30, "Business must be at most 30 characters long"),
+      ownerName: z
+        .string()
+        .min(3, "Username must be at least 3 characters long")
+        .max(30, "Username must be at most 30 characters long"),
+      email: z.string().email("Invalid Email formet"),
+      phone: z
+        .string()
+        .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format"),
+      category: z.string(),
+      address: z.string(),
+      city: z.string(),
+      websiteLink: z.string(),
+      googleMapIframe: z.string(),
+      businessDescription : z.string(),
+    }),
+    handler: async (input, ctx) => {
+      // console.log("__----___---ritik__---__---__");
+      // console.log("---",input);
+
+      const updatedListing = await db.update(businessDetails).set(input).where(eq(businessDetails.id,input.listing_id)).execute()
+      // console.log("___updated",updatedListing           )
+
+    },
+  }),
 };

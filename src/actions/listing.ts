@@ -25,8 +25,6 @@ export const listing = {
       }
 
       const listingDetails = await db.select().from(businessDetails);
-
-      console.log(listingDetails);
       return listingDetails;
     },
   }),

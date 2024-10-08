@@ -8,18 +8,33 @@ const { id } = Astro.params;
 if (!id) {
   return Astro.redirect("/somethingwrong");
 }
+
 const result = await Astro.callAction(actions.business.editListing, {
   id,
 });
-const inputError = isInputError(result?.error) ? result.error.fields : {};
+const updateListingResult = Astro.getActionResult(
+  actions.business.updateListing,
+);
+const inputError = isInputError(updateListingResult?.error)
+  ? updateListingResult.error.fields
+  : {};
 if (!result || !result?.data) {
   return Astro.redirect("/somethingwrong");
 }
 let listingData = result.data.at(0);
+if (result.error) {
+  console.log("error");
+}
 ---
 
 <Layout title="Welcome to Ritik.">
-  <form action={"/listing" + actions.business.addBusiness} method="post">
+  <form method="post" action={"/listing"+actions.business.updateListing}>
+    <Input
+      type="text"
+      name="listing_id"
+      value={listingData?.id}
+      inputError={inputError}
+    />
     <Input
       name="businessName"
       value={listingData?.businessName}
@@ -42,7 +57,7 @@ let listingData = result.data.at(0);
     <Input
       name="phone"
       id="phone"
-      value={listingData?.email}
+      value={listingData?.phone}
       inputError={inputError}
     />
     <Input
