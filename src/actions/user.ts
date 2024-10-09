@@ -1,43 +1,44 @@
-import { ActionError, defineAction } from 'astro:actions';
-import type { NewApiContext } from '@/interface/extended.interface';
-import { lucia } from '@/lib/auth';
-import { db } from '@/lib/db';
-import { userTable } from '@/schema/auth.schema';
-import { HASH_OPTION } from '@/utils/constant';
-import { TooManyRequest } from '@/utils/tooManyRequest';
-import { hash, verify } from '@node-rs/argon2';
-import { z } from 'astro:schema';
-import { eq } from 'drizzle-orm';
-import { generateIdFromEntropySize } from 'lucia';
+import { ActionError, defineAction } from "astro:actions";
+import type { NewApiContext } from "@/interface/extended.interface";
+import { lucia } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { userTable } from "@/schema/auth.schema";
+import { HASH_OPTION } from "@/utils/constant";
+import { TooManyRequest } from "@/utils/tooManyRequest";
+import { hash, verify } from "@node-rs/argon2";
+import { z } from "astro:schema";
+import { eq } from "drizzle-orm";
+import { generateIdFromEntropySize } from "lucia";
+import { userProfile } from "@/schema/userprofile.schema";
 
 export const user = {
   login: defineAction({
-    accept: 'form',
+    accept: "form",
     input: z.object({
       username: z
         .string()
-        .min(3, 'Username must be at least 3 characters long')
-        .max(30, 'Username must be at most 30 characters long')
+        .min(3, "Username must be at least 3 characters long")
+        .max(30, "Username must be at most 30 characters long")
         .regex(
           /^[a-zA-Z0-9_-]+$/,
-          'Username can only contain letters, numbers, underscores, and dashes',
+          "Username can only contain letters, numbers, underscores, and dashes",
         ),
       password: z
         .string()
-        .min(8, 'Password must be at least 8 characters long')
-        .max(128, 'Password must be at most 128 characters long')
-        .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-        .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-        .regex(/[0-9]/, 'Password must contain at least one digit')
+        .min(8, "Password must be at least 8 characters long")
+        .max(128, "Password must be at most 128 characters long")
+        .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+        .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+        .regex(/[0-9]/, "Password must contain at least one digit")
         .regex(
           /[@$!%*?&]/,
-          'Password must contain at least one special character',
+          "Password must contain at least one special character",
         ),
     }),
     handler: async (input, ctx: NewApiContext) => {
       if (TooManyRequest(ctx)) {
         throw new ActionError({
-          code: 'TOO_MANY_REQUESTS',
+          code: "TOO_MANY_REQUESTS",
         });
       }
 
@@ -47,15 +48,15 @@ export const user = {
         .where(eq(userTable.username, input.username));
       if (!existingUser || existingUser.length <= 0) {
         throw new ActionError({
-          code: 'UNAUTHORIZED',
+          code: "UNAUTHORIZED",
           message: "username don't exist",
         });
       }
 
       if (!existingUser[0]?.password_hash) {
         throw new ActionError({
-          code: 'BAD_REQUEST',
-          message: 'password is not found',
+          code: "BAD_REQUEST",
+          message: "password is not found",
         });
       }
 
@@ -67,7 +68,7 @@ export const user = {
 
       if (!validPassword) {
         throw new ActionError({
-          code: 'UNAUTHORIZED',
+          code: "UNAUTHORIZED",
           message: "password don't match",
         });
       }
@@ -84,32 +85,32 @@ export const user = {
   }),
 
   register: defineAction({
-    accept: 'form',
+    accept: "form",
     input: z.object({
       username: z
         .string()
-        .min(3, 'Username must be at least 3 characters long')
-        .max(30, 'Username must be at most 30 characters long')
+        .min(3, "Username must be at least 3 characters long")
+        .max(30, "Username must be at most 30 characters long")
         .regex(
           /^[a-zA-Z0-9_-]+$/,
-          'Username can only contain letters, numbers, underscores, and dashes',
+          "Username can only contain letters, numbers, underscores, and dashes",
         ),
       password: z
         .string()
-        .min(8, 'Password must be at least 8 characters long')
-        .max(128, 'Password must be at most 128 characters long')
-        .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-        .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-        .regex(/[0-9]/, 'Password must contain at least one digit')
+        .min(8, "Password must be at least 8 characters long")
+        .max(128, "Password must be at most 128 characters long")
+        .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+        .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+        .regex(/[0-9]/, "Password must contain at least one digit")
         .regex(
           /[@$!%*?&]/,
-          'Password must contain at least one special character',
+          "Password must contain at least one special character",
         ),
     }),
     handler: async (input, ctx: NewApiContext) => {
       if (TooManyRequest(ctx)) {
         throw new ActionError({
-          code: 'TOO_MANY_REQUESTS',
+          code: "TOO_MANY_REQUESTS",
         });
       }
       const userId = generateIdFromEntropySize(10);
@@ -120,8 +121,8 @@ export const user = {
 
       if (existingUser.length > 0) {
         throw new ActionError({
-          code: 'UNAUTHORIZED',
-          message: 'username already exist',
+          code: "UNAUTHORIZED",
+          message: "username already exist",
         });
       }
 
@@ -145,7 +146,7 @@ export const user = {
     },
   }),
   logOut: defineAction({
-    accept: 'form',
+    accept: "form",
     handler: async (_, ctx: NewApiContext) => {
       if (!ctx.locals.session) {
         return new Response(null, {
@@ -162,6 +163,21 @@ export const user = {
       );
 
       return true;
+    },
+  }),
+  getUser: defineAction({
+    accept: "json",
+    handler: async (_, ctx: NewApiContext) => {
+      if (!ctx.locals.user) {
+        return new Response(null, {
+          status: 401,
+        });
+      }
+      const user = await db
+        .select()
+        .from(userProfile)
+        .where(eq(userProfile.userId, ctx.locals.user.id));
+      return user.at(0);
     },
   }),
 };

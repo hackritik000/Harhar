@@ -1,5 +1,4 @@
 export const prerender = false;
-
 import { lucia } from '@/lib/auth';
 import { defineMiddleware } from 'astro:middleware';
 
