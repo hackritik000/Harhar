@@ -42,9 +42,6 @@ export const userprofile = {
         .from(userProfile)
         .where(eq(userProfile.userId, ctx.locals.user?.id));
 
-      console.log("Existing User Data:", existingUser); // Log existing user data
-      console.log("Input Data:", input); // Log input data to compare
-
       if (existingUser.length === 0) {
         // No user profile found, insert new profile
         await db.insert(userProfile).values({
@@ -53,13 +50,11 @@ export const userprofile = {
         });
       } else {
         // Update existing profile
-        const updatedUser =  await db
+        await db
           .update(userProfile)
           .set(input)
           .where(eq(userProfile.userId, ctx.locals.user?.id));
-          console.log("Updated User:", updatedUser);
       }
-      console.log("------------------------------------------");
       return true;
     },
   }),

@@ -1,48 +1,62 @@
 ---
 export const prerender = false;
 import Addcity from "@/components/Addcity.astro";
+import Input from "@/components/Input.astro";
 import Layout from "@/layouts/Layout.astro";
+import { isInputError } from "astro:actions";
 import { actions } from "astro:actions";
 
-const result = Astro.getActionResult(actions.userprofile.updateUserProfile)
+const result = Astro.getActionResult(actions.userprofile.updateUserProfile);
+const inputError = isInputError(result?.error) ? result.error.fields : {};
 
-if(result && !result?.error){
+const oldUser = await Astro.callAction(actions.user.getUser, {});
+console.log("oldUser", oldUser);
+let oldUserData = oldUser.data;
+
+console.log("oldUserData", oldUserData);
+if (result && !result?.error) {
   return Astro.redirect("/");
 }
-
 ---
 
 <Layout title="userprofile">
   <form method="post" action={actions.userprofile.updateUserProfile}>
-    <div>
-      <label for="firstName">First Name</label>
-      <input type="text" id="firstName" name="firstName" />
-    </div>
-
-    <div>
-      <label for="lastName">Last Name</label>
-      <input type="text" id="lastName" name="lastName" />
-    </div>
-
-    <div>
-      <label for="email">Email</label>
-      <input type="text" id="email" name="email" />
-    </div>
-
-    <div>
-      <label for="phone">Phone</label>
-      <input type="text" id="phone" name="phone" />
-    </div>
-
-    <div>
-      <label for="address">Address</label>
-      <input type="text" id="address" name="address" />
-    </div>
-
-    <div>
-      <label for="city">City</label>
-      <input type="text" id="city" name="city" />
-    </div>
+    <Input
+      id="firstName"
+      name="firstName"
+      value={oldUserData?.firstName}
+      inputError={inputError}
+    />
+    <Input
+      id="lastName"
+      name="lastName"
+      value={oldUserData?.lastName}
+      inputError={inputError}
+    />
+    <Input
+      id="email"
+      name="email"
+      value={oldUserData?.email}
+      inputError={inputError}
+    />
+    <Input
+      id="phone"
+      name="phone"
+      value={oldUserData?.phone}
+      inputError={inputError}
+    />
+    <Input
+      id="address"
+      name="address"
+      value={oldUserData?.address}
+      inputError={inputError}
+    />
+    <Input
+      id="city"
+      name="city"
+      value={oldUserData?.city}
+      inputError={inputError}
+    />
     <Addcity />
     <button>Update Profile</button>
   </form>
