@@ -12,6 +12,7 @@ if (user) {
   isAdmin = await checkAdminUser(user.id);
 }
 ---
+<<<<<<< HEAD
 
 {
   isAdmin && (
@@ -19,4 +20,12 @@ if (user) {
       <Input name="city" id="city" inputError={inputError} />
     </form>
   )
+=======
+{isAdmin&&
+(<form method="post" action={actions.smallActions.showAddCity}>
+  <Input name="city" id="city"inputError={inputError} />
+  <button type="submit">Add New City in DB</button>
+  <span></span>
+</form>)
+>>>>>>> 1448967eee483f4c3528c3d2b53da94ff47e8008
 }

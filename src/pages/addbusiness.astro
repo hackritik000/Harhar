@@ -5,8 +5,11 @@ import { isInputError } from "astro:actions";
 import Addcity from "@/components/Addcity.astro";
 import { actions } from "astro:actions";
 import Layout from "@/layouts/Layout.astro";
+import Select from "@/components/Select.astro";
 const result = Astro.getActionResult(actions.business.addBusiness);
 const inputError = isInputError(result?.error) ? result.error.fields : {};
+// const {error,data} = Astro.getActionResult(actions.smallActions.allCities)
+
 ---
 
 <Layout title="adding business">
@@ -23,7 +26,9 @@ const inputError = isInputError(result?.error) ? result.error.fields : {};
     <Input name="category" id="category" inputError={inputError} />
     <Input name="address" id="address" inputError={inputError} />
     <Input name="city" id="city" inputError={inputError} />
-
+    <Select >
+      <!-- <option value="">Jodhpur</option> -->
+    </Select>
     <Input name="websiteLink" id="website_link" inputError={inputError} />
     <Input
       name="googleMapIframe"
