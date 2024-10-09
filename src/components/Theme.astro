@@ -1,0 +1,32 @@
+---
+
+---
+
+<button id="theme">
+  <slot />
+</button>
+
+<script>
+  const setTheme = (theme: string) => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  };
+  const setExistingTheme = () => {
+    const existingTheme = localStorage.getItem("theme");
+    if (existingTheme) {
+      setTheme(existingTheme);
+    }
+  };
+  document.addEventListener("astro:after-swap", () => {
+    setExistingTheme();
+  });
+  document.addEventListener("astro:page-load", () => {
+    const themeBtn = document.querySelector("#theme") as HTMLButtonElement;
+    setExistingTheme();
+    themeBtn.addEventListener("click", () => {
+      const newTheme =
+        localStorage.getItem("theme") == "light" ? "dark" : "light";
+      setTheme(newTheme);
+    });
+  });
+</script>
