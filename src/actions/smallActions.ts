@@ -6,10 +6,6 @@ import { z } from "astro:schema";
 
 export const smallActions = {
   showAddCity: defineAction({
-<<<<<<< HEAD
-    accept: "form",
-=======
->>>>>>> 1448967eee483f4c3528c3d2b53da94ff47e8008
     input: z.object({
       city: z.string(),
     }),
@@ -20,15 +16,6 @@ export const smallActions = {
           code: "TOO_MANY_REQUESTS",
         });
       }
-<<<<<<< HEAD
-      console.log("boo");
-      const addCity = await db.insert(cities).values({ city: input.city });
-      console.error("hii");
-      console.log(addCity);
-      // return addCity
-    },
-  }),
-=======
 
       const citySmallCase = input.city.toLowerCase();
       const addCity = await db.insert(cities).values({ city: citySmallCase });
@@ -59,5 +46,4 @@ export const smallActions = {
       console.log(cities);
     },
   }),
->>>>>>> 1448967eee483f4c3528c3d2b53da94ff47e8008
 };

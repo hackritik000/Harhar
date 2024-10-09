@@ -63,28 +63,4 @@ export const userprofile = {
       return true;
     },
   }),
-
-  editUserProfile: defineAction({
-    accept: "json",
-    input: z.object({ id: z.string() }),
-    handler: async (input, ctx) => {
-      if (TooManyRequest(ctx)) {
-        throw new ActionError({
-          code: "TOO_MANY_REQUESTS",
-        });
-      }
-
-      const editUser = await db
-        .select()
-        .from(userProfile)
-        .where(eq(userProfile.id, input.id));
-      if (!editUser) {
-        throw new ActionError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "something went wrong while edit user profile",
-        });
-      }
-      return editUser;
-    },
-  }),
 };
