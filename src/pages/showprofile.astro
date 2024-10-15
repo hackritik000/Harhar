@@ -2,13 +2,10 @@
 export const prerender = false;
 import Addcity from "@/components/Addcity.astro";
 import Layout from "@/layouts/Layout.astro";
-// import { isInputError } from "astro:actions";
 import { actions } from "astro:actions";
 
-// const id = ;
-const result = await Astro.callAction(actions.user.getUser, {});
-let userExistingData = result.data; 
-
+const result = await Astro.callAction(actions.userprofile.getUserProfile, {});
+let userExistingData = result.data;
 ---
 
 <Layout title="userprofile">

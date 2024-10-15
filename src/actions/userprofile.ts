@@ -1,3 +1,4 @@
+import type { NewApiContext } from "@/interface/extended.interface";
 import { db } from "@/lib/db";
 import { userProfile } from "@/schema/userprofile.schema";
 import { TooManyRequest } from "@/utils/tooManyRequest";
@@ -56,6 +57,22 @@ export const userprofile = {
           .where(eq(userProfile.userId, ctx.locals.user?.id));
       }
       return true;
+    },
+  }),
+
+  getUserProfile: defineAction({
+    accept: "json",
+    handler: async (_, ctx: NewApiContext) => {
+      if (!ctx.locals.user) {
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+        });
+      }
+      const user = await db
+        .select()
+        .from(userProfile)
+        .where(eq(userProfile.userId, ctx.locals.user.id));
+      return user.at(0);
     },
   }),
 };

@@ -3,50 +3,24 @@ export const prerender = false;
 import { isInputError } from "astro:actions";
 import { actions } from "astro:actions";
 import Layout from "../layouts/Layout.astro";
+import Input from "@/components/Input.astro";
+import "@/style/form.scss";
 
 const result = Astro.getActionResult(actions.user.login);
 const inputError = isInputError(result?.error) ? result.error.fields : {};
 const user = Astro.locals.user;
-if (!user) {
-  console.log("user not found");
-} else {
-  console.log("user found");
+if (user) {
   return Astro.redirect("/");
 }
 ---
 
-<Layout title="helo">
+<Layout title="Login Page">
   <div class="error">
     {result?.error && !inputError && result.error.message}
   </div>
   <form method="post" action={actions.user.login}>
-    <div>
-      <label for="username">Username</label>
-      {
-        inputError.username ? (
-          <input type="text" id="username" name="username" />
-        ) : (
-          <input transition:persist type="text" id="username" name="username" />
-        )
-      }
-      {inputError.username?.at(0)}
-    </div>
-    <div>
-      <label for="password">Password</label>
-      {
-        inputError.password ? (
-          <input type="password" id="password" name="password" />
-        ) : (
-          <input
-            transition:persist
-            type="password"
-            id="password"
-            name="password"
-          />
-        )
-      }
-      {inputError.password?.at(0)}
-    </div>
+    <Input name="username" id="username" inputError={inputError} />
+    <Input name="password" id="password" inputError={inputError} />
     <div>
       <button type="submit">Login</button>
     </div>

@@ -145,15 +145,15 @@ export const business = {
       city: z.string(),
       websiteLink: z.string(),
       googleMapIframe: z.string(),
-      businessDescription : z.string(),
+      businessDescription: z.string(),
     }),
-    handler: async (input, ctx) => {
-      // console.log("__----___---ritik__---__---__");
-      // console.log("---",input);
-
-      const updatedListing = await db.update(businessDetails).set(input).where(eq(businessDetails.id,input.listing_id)).execute()
-      // console.log("___updated",updatedListing           )
-
+    handler: async (input) => {
+      await db
+        .update(businessDetails)
+        .set(input)
+        .where(eq(businessDetails.id, input.listing_id))
+        .execute();
+      return;
     },
   }),
 };

@@ -6,6 +6,7 @@ const { data } = await Astro.callAction(actions.listing.showAllListing, {});
 ---
 
 <Layout title="listing.">
+  <a href="/">home</a>
   <form action="">
     {
       data?.map((listing) => (

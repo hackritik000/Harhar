@@ -9,7 +9,6 @@ import { hash, verify } from "@node-rs/argon2";
 import { z } from "astro:schema";
 import { eq } from "drizzle-orm";
 import { generateIdFromEntropySize } from "lucia";
-import { userProfile } from "@/schema/userprofile.schema";
 
 export const user = {
   login: defineAction({
@@ -163,21 +162,6 @@ export const user = {
       );
 
       return true;
-    },
-  }),
-  getUser: defineAction({
-    accept: "json",
-    handler: async (_, ctx: NewApiContext) => {
-      if (!ctx.locals.user) {
-        return new Response(null, {
-          status: 401,
-        });
-      }
-      const user = await db
-        .select()
-        .from(userProfile)
-        .where(eq(userProfile.userId, ctx.locals.user.id));
-      return user.at(0);
     },
   }),
 };

@@ -4,7 +4,9 @@ interface Props {
 }
 
 const { title } = Astro.props;
+import Theme from "@/components/Theme.astro";
 import { ViewTransitions } from "astro:transitions";
+import "@/style/global.scss";
 ---
 
 <!doctype html>
@@ -19,6 +21,8 @@ import { ViewTransitions } from "astro:transitions";
     <ViewTransitions />
   </head>
   <body>
+    <Theme> Theme Change </Theme>
+    <div class="background"></div>
     <slot />
   </body>
 </html>

@@ -42,8 +42,8 @@ export const smallActions = {
         });
       }
 
-      const allCities = await db.select().from(cities).execute();
-      console.log(cities);
+      await db.select().from(cities).execute();
+      return;
     },
   }),
 };

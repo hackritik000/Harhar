@@ -9,11 +9,8 @@ import { actions } from "astro:actions";
 const result = Astro.getActionResult(actions.userprofile.updateUserProfile);
 const inputError = isInputError(result?.error) ? result.error.fields : {};
 
-const oldUser = await Astro.callAction(actions.user.getUser, {});
-console.log("oldUser", oldUser);
+const oldUser = await Astro.callAction(actions.userprofile.getUserProfile, {});
 let oldUserData = oldUser.data;
-
-console.log("oldUserData", oldUserData);
 if (result && !result?.error) {
   return Astro.redirect("/");
 }

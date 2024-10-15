@@ -1,38 +1,30 @@
 ---
-const { id, name, Class, placeholder, value="", inputError } = Astro.props;
+export const prerender = false;
+const {
+  id,
+  name,
+  className,
+  placeholder,
+  value = "",
+  type = "text",
+  pattern = false,
+  inputError,
+} = Astro.props;
 ---
 
 <div>
-  <label for={id}>{name}</label>
-  {
-    inputError[name] ? (
-      <input
-        type="text"
-        id={id}
-        name={name}
-        class={Class}
-        placeholder={placeholder}
-      />
-    ) : (
-      <input
-        transition:persist
-        type="text"
-        id={id}        
-        name={name}
-        class={Class}
-        placeholder={placeholder}
-        value={value}
-      />
-    )
-  }
+  <label class="" for={id}>{name}</label>
+  <input
+    type={type}
+    id={id}
+    name={name}
+    value={value + " "}
+    transition:name={name}
+    transition:persist
+    class={`${className} `}
+    placeholder={placeholder}
+    pattern={pattern}
+  />
 
-      <!-- <input -->
-      <!--   transition:persist -->
-      <!--   type="text" -->
-      <!--   id={id}         -->
-      <!--   name={name} -->
-      <!--   class={Class} -->
-      <!--   placeholder={placeholder} -->
-      <!-- /> -->
-  {inputError[name]?.at(0)}
+  <div>{inputError[name]?.at(0)}</div>
 </div>
