@@ -1,7 +1,6 @@
 ---
 export const prerender = false;
 import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card.astro";
 import Logout from "@/components/Logout.astro";
 
 const user = Astro.locals.user;
@@ -15,11 +14,8 @@ if (!user) {
 <a href="/listing">listing</a>
 <a href="/userprofile">userProfile</a>
 
-
 <Layout title="Welcome to Ritik.">
-  <div>Ritik</div>
   <main>
-    <div>Ranjeet Kumar</div>
     <h1>Welcome to <span class="text-gradient">Karan</span></h1>
     <p class="instructions">
       To get started, open the directory <code>src/pages</code> in your project.<br
