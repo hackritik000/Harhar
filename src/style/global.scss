@@ -1,6 +1,9 @@
+@use "./mixin.scss" as *;
+
 :root {
   --primaryTheme: #717171;
   --secondaryTheme: #1e1e20;
+  --textColor: black;
   --primary: black;
   --secondary: white;
   --backgroundColor: linear-gradient(
@@ -13,6 +16,7 @@
 :root[data-theme="dark"] {
   --primaryTheme: #1e1e20;
   --secondaryTheme: #717171;
+  --textColor: white;
   --primary: white;
   --secondary: black;
   --backgroundColor: linear-gradient(
@@ -21,60 +25,54 @@
     rgba(18, 15, 47, 1) 50%,
     rgba(27, 18, 29, 1) 100%
   );
+  --backgraundCircleLeft: #cc00ff;
+  --backgraundCircleRight: #7000ff;
 }
-//////////////////
-//   Variable   //
-//////////////////
-$primary1: #cc00ff;
-$primary2: #7000ff;
 
 * {
   margin: 0;
   padding: 0;
+  list-style: none;
   box-sizing: border-box;
+  text-decoration: none;
 }
 
 body {
-  & > section {
-    position: relative;
-    z-index: 1;
-  }
-  z-index: -1;
   background: var(--backgroundColor);
-  font-size: 18px;
   letter-spacing: 0;
   line-height: 1.44;
   font-weight: 400;
-  color: var(--primary);
+  color: var(--textColor);
   position: relative;
   word-break: break-word;
   min-height: 100vh;
-  &::before {
+
+  // adding dynamic font size
+  @include autoMinMaxSize("font-size", 14, 16);
+
+  &::before,
+  &::after {
+    z-index: -1;
     content: "";
     position: fixed;
     width: 270px;
     height: 270px;
-    top: 27.5%;
-    left: 23.9%;
-    background-color: $primary1;
     border-radius: 100%;
     filter: blur(150px);
+  }
+  &::before {
+    top: 27.5%;
+    left: 23.9%;
+    background-color: var(--backgraundCircleLeft);
   }
 
   &::after {
-    content: "";
-    position: fixed;
-    width: 270px;
-    height: 270px;
     top: 42.8%;
     right: 25%;
-    background-color: $primary2;
-    border-radius: 100%;
-    filter: blur(150px);
+    background-color: var(--backgraundCircleRight);
   }
 }
-* {
-  padding: 0;
-  margin: 0;
-  list-style: none;
+
+button {
+  cursor: pointer;
 }

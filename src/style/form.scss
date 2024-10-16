@@ -1,0 +1,41 @@
+form {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 30px auto;
+  width: min(300px, 90vw);
+  gap: 15px;
+
+  * {
+    width: 100%;
+    min-width: 0;
+  }
+
+  input:invalid:not(:placeholder-shown) {
+    border-color: red;
+    background-image: url(checked_red.png);
+  }
+
+  input:valid:not(:placeholder-shown) {
+    background-image: url(checked_green.png);
+  }
+
+  input:invalid:not(:placeholder-shown),
+  input:valid:not(:placeholder-shown) {
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: calc(100% - 10px);
+  }
+
+  input + .show-error {
+    visibility: hidden;
+  }
+
+  input:invalid:not(:placeholder-shown) + .show-error {
+    visibility: visible;
+  }
+
+  input:invalid ~ button[type="submit"] {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
