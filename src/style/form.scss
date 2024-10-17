@@ -4,7 +4,6 @@ form {
   margin: 30px auto;
   width: min(300px, 90vw);
   gap: 15px;
-  border: 1px solid red;
 
   * {
     width: 100%;
@@ -35,7 +34,7 @@ form {
     visibility: visible;
   }
 
-  input:invalid ~ button[type="submit"] {
+  &:has(input:invalid, input:placeholder-shown) button[type="submit"] {
     opacity: 0.6;
     pointer-events: none;
   }

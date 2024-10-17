@@ -1,5 +1,5 @@
 ---
-export const prerender = false; 
+export const prerender = false;
 import { isInputError } from "astro:actions";
 import { actions } from "astro:actions";
 import Layout from "../layouts/Layout.astro";
@@ -21,8 +21,22 @@ if (user) {
     {result?.error && !inputError && result.error.message}
   </div>
   <form method="post" action={actions.user.login}>
-    <Input name="username" id="username"  className="showError" placeholder="username" inputError={inputError} />
-    <Input name="password" id="password"  className="showError" placeholder="password" inputError={inputError} />
+    <Input
+      name="username"
+      id="username"
+      pattern="^[a-zA-Z][a-zA-Z0-9_]{2,15}$"
+      className="showError"
+      placeholder="username"
+      inputError={inputError}
+    />
+    <Input
+      name="password"
+      id="password"
+      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$"
+      className="showError"
+      placeholder="password"
+      inputError={inputError}
+    />
     <div>
       <button type="submit">Login</button>
     </div>
