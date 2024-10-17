@@ -1,4 +1,4 @@
-@use "./components.scss";
+@import "./components.scss";
 
 form {
   display: flex;
@@ -12,23 +12,9 @@ form {
     min-width: 0;
   }
 
-  button[type="submit"] {
-    background-color: transparent;
-    cursor: pointer;
-    letter-spacing: 1.5px;
-    font-size: 100%;
-    padding: 10px 0px;
-    border: 2px solid white;
-    border-radius: 3px;
-    &:hover {
-      opacity: 0.8;
-    }
-  }
   input:invalid:not(:placeholder-shown) {
-    // border-color: red;
     outline: 2px solid red;
     border-radius: 2px;
-    // outline-offset: 1px;
     border: 1px solid black;
   }
 

@@ -1,16 +1,9 @@
-label {
-  font-size: 20px;
-  margin-bottom: 5px;
-  letter-spacing: 3px;
-}
-
 input {
   background-color: transparent;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 5px;
   height: 50px;
   color: inherit;
-  margin: 6px 0;
   padding-inline: 30px;
   font-size: 100%;
   letter-spacing: 1.5px;
@@ -23,4 +16,11 @@ input:focus {
 button {
   cursor: pointer;
   color: inherit;
+  padding: 1em 2em;
+  background-color: transparent;
+  border: 3px solid white;
+  border-radius: 3px;
+  &:hover {
+    opacity: 0.8;
+  }
 }
