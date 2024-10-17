@@ -1,5 +1,5 @@
 ---
-export const prerender = false;
+export const prerender = false; 
 import { isInputError } from "astro:actions";
 import { actions } from "astro:actions";
 import Layout from "../layouts/Layout.astro";
@@ -7,7 +7,9 @@ import Input from "@/components/Input.astro";
 import "@/style/form.scss";
 
 const result = Astro.getActionResult(actions.user.login);
+console.log(result);
 const inputError = isInputError(result?.error) ? result.error.fields : {};
+console.log(inputError);
 const user = Astro.locals.user;
 if (user) {
   return Astro.redirect("/");
@@ -19,8 +21,8 @@ if (user) {
     {result?.error && !inputError && result.error.message}
   </div>
   <form method="post" action={actions.user.login}>
-    <Input name="username" id="username" inputError={inputError} />
-    <Input name="password" id="password" inputError={inputError} />
+    <Input name="username" id="username"  className="showError" placeholder="username" inputError={inputError} />
+    <Input name="password" id="password"  className="showError" placeholder="password" inputError={inputError} />
     <div>
       <button type="submit">Login</button>
     </div>

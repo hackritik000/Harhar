@@ -16,7 +16,7 @@ export const user = {
     input: z.object({
       username: z
         .string()
-        .min(3, "Username must be at least 3 characters long")
+        .min(3)
         .max(30, "Username must be at most 30 characters long")
         .regex(
           /^[a-zA-Z0-9_-]+$/,
@@ -24,8 +24,8 @@ export const user = {
         ),
       password: z
         .string()
-        .min(8, "Password must be at least 8 characters long")
-        .max(128, "Password must be at most 128 characters long")
+        .min(8, { message: "Password must be at least 8 characters long" })
+        .max(30, "Password must be at most 128 characters long")
         .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
         .regex(/[a-z]/, "Password must contain at least one lowercase letter")
         .regex(/[0-9]/, "Password must contain at least one digit")
@@ -106,7 +106,10 @@ export const user = {
           "Password must contain at least one special character",
         ),
     }),
+
     handler: async (input, ctx: NewApiContext) => {
+      
+      console.log("Validation passed", input);
       if (TooManyRequest(ctx)) {
         throw new ActionError({
           code: "TOO_MANY_REQUESTS",

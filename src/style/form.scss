@@ -4,6 +4,7 @@ form {
   margin: 30px auto;
   width: min(300px, 90vw);
   gap: 15px;
+  border: 1px solid red;
 
   * {
     width: 100%;
@@ -12,11 +13,11 @@ form {
 
   input:invalid:not(:placeholder-shown) {
     border-color: red;
-    background-image: url(checked_red.png);
+    // background-image: url(/public/images/icon-park--correct.svg);
   }
 
   input:valid:not(:placeholder-shown) {
-    background-image: url(checked_green.png);
+    background-image: url(/public/images/icon-park--correct.svg);
   }
 
   input:invalid:not(:placeholder-shown),

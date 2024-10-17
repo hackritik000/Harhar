@@ -18,7 +18,7 @@ const {
     type={type}
     id={id}
     name={name}
-    value={value + " "}
+    value={value}
     transition:name={name}
     transition:persist
     class={`${className} `}
@@ -26,5 +26,6 @@ const {
     pattern={pattern}
   />
 
-  <div>{inputError[name]?.at(0)}</div>
+  <div>{inputError && inputError[name]?.[0]}</div>
+
 </div>

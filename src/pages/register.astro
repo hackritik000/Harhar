@@ -1,37 +1,27 @@
 ---
 export const prerender = false;
+import Input from "@/components/Input.astro";
 import Layout from "@/layouts/Layout.astro";
 import { isInputError } from "astro:actions";
-import { actions} from "astro:actions"
+import { actions } from "astro:actions";
 
-const result = Astro.getActionResult(actions.user.register)
-const inputError = isInputError(result?.error) ? result.error.fields : null;
+const result = Astro.getActionResult(actions.user.register);
+if (result?.error) {
+  console.log("Result", result.error); // See if min/max errors are logged correctly
+}
+const inputError = isInputError(result?.error) ? result.error.fields : {};
+
 ---
+
 <Layout title="Register">
- <div class="error">{result?.error && !inputError && result.error.message}</div>
-<form id="register" method="post" action={'/login' + actions.user.register}>
-    {}
+  <div class="error">
+    {result?.error && !inputError && result.error.message}
+  </div>
+  <form id="register" method="post" action={"/login" + actions.user.register}>
+    <Input name="username" id="username" inputError={inputError} />
+    <Input name="password" id="password" inputError={inputError} />
     <div>
-        <label for="username">Username</label>
-        {
-            inputError?.username
-            ?  <input type="text" id="username" name="username"/>
-            :  <input transition:persist type="text" id="username" name="username"/>
-        }
-        {inputError?.username?.at(0)}
-       
+      <button type="submit">Register</button>
     </div>
-    <div>
-        <label for="password">Password</label>
-        {
-            inputError?.password
-            ? <input type="password" id="password" name="password"/>
-            : <input transition:persist type="password" id="password" name="password"/>
-        }
-        {inputError?.password?.at(0)}
-    </div>
-    <div>
-        <button type="submit">Register</button>
-    </div>
-</form>
+  </form>
 </Layout>
