@@ -108,7 +108,6 @@ export const user = {
     }),
 
     handler: async (input, ctx: NewApiContext) => {
-      
       console.log("Validation passed", input);
       if (TooManyRequest(ctx)) {
         throw new ActionError({

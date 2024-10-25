@@ -5,6 +5,8 @@ import { actions } from "astro:actions";
 import Layout from "../layouts/Layout.astro";
 import Input from "@/components/Input.astro";
 import "@/style/form.scss";
+import "@/style/components.scss";
+
 
 const result = Astro.getActionResult(actions.user.login);
 console.log(result);
@@ -29,16 +31,41 @@ if (user) {
       placeholder="Enter Your Username"
       inputError={inputError}
     />
-    <Input
-      name="password"
-      id="password"
-      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$"
-      className="showError"
-      placeholder="Enter Your Password"
-      inputError={inputError}
-    />
+    <div class="password-wrapper">
+      <Input
+        type="password"
+        name="password"
+        id="password"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$"
+        className="showError"
+        placeholder="Enter Your Password"
+        inputError={inputError}
+      />
+      <span class="toggle-password" id="togglePassword"></span>
+    </div>
     <div>
       <button type="submit">Login</button>
     </div>
   </form>
 </Layout>
+ 
+<script>
+  const passwordInput = document.getElementById("password") as HTMLInputElement;
+  const togglePassword = document.getElementById(
+    "togglePassword",
+  ) as HTMLSpanElement;
+
+  togglePassword.addEventListener("click", () => {
+    const type =
+      passwordInput.getAttribute("type") == "password" ? "text" : "password";
+    passwordInput.setAttribute("type", type);
+
+    if (type == "password") {
+      togglePassword.style.backgroundImage =
+        "url('/public/images/mdi--eye.svg')";
+    } else {
+      togglePassword.style.backgroundImage =
+        "url('/public/images/mdi--eye-off.svg')";
+    }
+  });
+</script>

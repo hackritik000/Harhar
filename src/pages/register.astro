@@ -4,13 +4,14 @@ import Input from "@/components/Input.astro";
 import Layout from "@/layouts/Layout.astro";
 import { isInputError } from "astro:actions";
 import { actions } from "astro:actions";
+import "@/style/form.scss";
+import "@/style/components.scss";
 
 const result = Astro.getActionResult(actions.user.register);
 if (result?.error) {
   console.log("Result", result.error); // See if min/max errors are logged correctly
 }
 const inputError = isInputError(result?.error) ? result.error.fields : {};
-
 ---
 
 <Layout title="Register">
@@ -18,10 +19,38 @@ const inputError = isInputError(result?.error) ? result.error.fields : {};
     {result?.error && !inputError && result.error.message}
   </div>
   <form id="register" method="post" action={"/login" + actions.user.register}>
-    <Input name="username" id="username" inputError={inputError} />
-    <Input name="password" id="password" inputError={inputError} />
+    <Input
+      name="username"
+      id="username"
+      pattern="^[a-zA-Z][a-zA-Z0-9_]{2,15}$"
+      className="showError"
+      placeholder="Enter Your Username"
+      inputError={inputError}
+    />
+    <Input
+      type="password"
+      name="password"
+      id="password"
+      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$"
+      className="showError"
+      placeholder="Enter Your Password"
+      inputError={inputError}
+    />
+
+    <Input
+      type="password"
+      name="confirmPassword"
+      id="confirmPassword"
+      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$"
+      className="showError"
+      placeholder="Confirm Your Password"
+      inputError={inputError}
+    />
     <div>
       <button type="submit">Register</button>
     </div>
   </form>
 </Layout>
+
+
+
