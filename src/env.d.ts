@@ -11,6 +11,11 @@ interface ImportMetaEnv {
   readonly DB_PORT: number;
 
   readonly PRODUCTION: boolean;
+
+readonly PUBLIC_CLOUDINARY_CLOUD_NAME: string;
+readonly PUBLIC_CLOUDINARY_API_KEY: string;
+readonly CLOUDINARY_API_SECRET: string;
+
 }
 
 interface ImportMeta {

@@ -2,7 +2,7 @@
 export const prerender = false;
 import Layout from "../layouts/Layout.astro";
 import Logout from "@/components/Logout.astro";
-
+import { CldUploadWidget } from "astro-cloudinary";
 const user = Astro.locals.user;
 if (!user) {
   console.log("user not found");
@@ -23,5 +23,8 @@ if (!user) {
       <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
     </p>
     <Logout />
+    <CldUploadWidget signatureEndpoint="/api/sign-cloudinary-params">
+      <button>Upload</button>
+    </CldUploadWidget>
   </main>
 </Layout>

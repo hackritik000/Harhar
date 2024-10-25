@@ -1,3 +1,4 @@
+@use "sass:meta";
 @mixin autoMinMaxSize(
   $property,
   $minSize,
@@ -5,13 +6,13 @@
   $minviewport: 320,
   $maxviewport: 1024
 ) {
-  @if (type-of($property) != "string") {
+  @if (meta.type-of($property) != "string") {
     @error "property must be css property";
   }
-  @if (type-of($minSize) != "number") or
-    (type-of($maxSize) != "number") or
-    (type-of($minviewport) != "number") or
-    (type-of($maxviewport) != "number")
+  @if (meta.type-of($minSize) != "number") or
+    (meta.type-of($maxSize) != "number") or
+    (meta.type-of($minviewport) != "number") or
+    (meta.type-of($maxviewport) != "number")
   {
     @error "minSize and maxSize and minviewport and maxviewport must be numbers";
   }
