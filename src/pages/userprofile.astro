@@ -16,8 +16,38 @@ if (result && !result?.error) {
 }
 ---
 
+<style>
+  .imgbox{
+    border: 1px solid white;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    cursor: pointer;
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+
+
+  }
+    #profileImg{
+    display: none;
+    width: 100px;
+  }
+  label#profilelabel img{
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    
+  }
+</style>
 <Layout title="userprofile">
   <form method="post" action={actions.userprofile.updateUserProfile}>
+    <div class="imgbox">
+      <label id="profilelabel" for="profileImg" >
+        <img id="uploadedImg" src="./profile.png" alt="">
+      </label>
+      <input id="profileImg" type="file" >
+    </div>
     <Input
       id="firstName"
       name="firstName"
@@ -58,3 +88,13 @@ if (result && !result?.error) {
     <button>Update Profile</button>
   </form>
 </Layout>
+  <script>
+    const img = document.getElementById("profileImg").addEventListener("change",(event)=>{
+      console.log(event,"hi this is karan")
+
+    })
+  const inputFileLocation = document.getElementById("profileImg")
+  console.log(inputFileLocation)
+
+  </script>
+

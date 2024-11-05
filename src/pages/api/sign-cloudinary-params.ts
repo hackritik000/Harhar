@@ -12,6 +12,7 @@ export const prerender = false;
 export const POST: APIRoute = async ({ request }) => {
   const body = await request.json();
   const { paramsToSign } = body;
+  console.log("Hi in cloudnary .....",paramsToSign)
   const signature = cloudinary.utils.api_sign_request(
     paramsToSign,
     import.meta.env.CLOUDINARY_API_SECRET,
