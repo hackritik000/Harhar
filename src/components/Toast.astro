@@ -1,10 +1,12 @@
 ---
 const { message } = Astro.props;
 
-const isVisible = message !== "";
+const isVisible = message !== "" || null || undefined || false;
 
+const randomvalue = (Math.round(Math.random() * 10)) + ""
 ---
 
+<div id="message">{message}</div>
 <div id="toast" class={`toast ${isVisible ? 'visible' : 'hidden'}`}>
     <span>{message}</span>
 </div>
@@ -34,11 +36,17 @@ const isVisible = message !== "";
 
 </style>
 <script>
-if(isVisible){
+
+document.addEventListener("astro:page-load",()=> {
+  const message = document.getElementById("message") as HTMLDivElement;
+  const isVisible = message.innerText !== "" || null || undefined || false;
+if( isVisible){
+  console.log("hi" + isVisible)
     setTimeout(()=>{
         const toastElement = document.getElementById('toast') as HTMLDivElement;
         toastElement.classList.remove('visible');
-
+        toastElement.classList.add('hidden');
     },3000)
 }
+})
 </script>   

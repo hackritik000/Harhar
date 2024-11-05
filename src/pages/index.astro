@@ -3,16 +3,31 @@ export const prerender = false;
 import Layout from "../layouts/Layout.astro";
 import Logout from "@/components/Logout.astro";
 import { CldUploadWidget } from "astro-cloudinary";
+import { actions } from "astro:actions";
+
 const user = Astro.locals.user;
 if (!user) {
-  console.log("user not found");
+  // console.log("user not found");
 } else {
-  console.log("user found");
+  // console.log("user found");
 }
 ---
 
+<!-- src/components/UploadForm.astro -->
+<form
+  action={actions.uploadFile.uploadfile}
+  method="post"
+  enctype="multipart/form-data"
+>
+  <label for="file">Upload an image:</label>
+  <input type="file" id="file" name="file" accept="image/*" />
+  <input type="text" name="ritik" />
+  <button type="submit">Upload</button>
+</form>
+
 <a href="/listing">listing</a>
 <a href="/userprofile">userProfile</a>
+<a href="/login">login</a>
 
 <Layout title="Welcome to Ritik.">
   <main>
@@ -23,7 +38,10 @@ if (!user) {
       <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
     </p>
     <Logout />
-    <CldUploadWidget signatureEndpoint="/api/sign-cloudinary-params">
+    <CldUploadWidget
+      uploadPreset={import.meta.env.CLOUDINARY_UPLOAD_PRESET}
+      signatureEndpoint="/api/sign-cloudinary-params"
+    >
       <button>Upload</button>
     </CldUploadWidget>
   </main>
