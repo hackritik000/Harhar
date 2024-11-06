@@ -1,0 +1,135 @@
+<style>
+  .imgbox {
+    border: 1px solid white;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    cursor: pointer;
+    /* display: flex;
+      align-items: center;
+      justify-content: center; */
+  }
+  #profileImg {
+    display: none;
+    width: 100px;
+  }
+  label#profilelabel img {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+  }
+
+  /* cropper css */
+  #cropperBox {
+    display: none;
+  }
+  .preview {
+    border-radius: 50%;
+    overflow: hidden;
+    width: 200px; /* Set width and height */
+    height: 200px;
+  }
+</style>
+
+<div id="imgBox">
+  <label id="profilelabel" for="profileImg">
+    <img id="previewImg" src="./profile.png" alt="" />
+  </label>
+  <input id="profileImg" type="file" accept="image/*" />
+</div>
+
+<div id="cropperBox">
+  <div class="preview"></div>
+  <div>
+    <img id="previewImg" src={"/profile.png"} alt="Profile Image" />
+  </div>
+
+  <!-- Button to Crop the Image -->
+  <button id="crop-btn">Crop Image</button>
+
+  <!-- Canvas to Display the Cropped Image -->
+  <div>
+    <h3>Cropped Image:</h3>
+    <img id="croppedImage" alt="Cropped Image" />
+  </div>
+</div>
+
+<style>
+  /* Make the preview circular */
+</style>
+
+<script>
+  import Cropper from "cropperjs";
+
+  let cropper: Cropper;
+
+  const cropBtn = document.querySelector("#crop-btn") as HTMLButtonElement;
+
+  function initializeCropper() {
+    const image = document.getElementById("image") as HTMLImageElement;
+
+    cropper = new Cropper(image, {
+      aspectRatio: 1,
+      viewMode: 1,
+      preview: ".preview",
+
+      crop(event) {
+        console.log(event.detail.x);
+        console.log(event.detail.y);
+      },
+    });
+  }
+
+  //   cropBtn.addEventListener("click", cropImage);
+
+  // Ensure the cropper is initialized when the DOM is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    initializeCropper();
+  });
+
+  function cropImage() {
+    if (cropper) {
+      const croppedCanvas = cropper.getCroppedCanvas();
+      const croppedImage = document.getElementById(
+        "croppedImage",
+      ) as HTMLImageElement;
+      croppedImage.src = croppedCanvas.toDataURL();
+    }
+  }
+
+  cropImage();
+
+  // image upload code
+  const cropperBox = document.getElementById("cropperBox") as HTMLDivElement;
+  const imageBox = document.getElementById("imgBox") as HTMLDivElement;
+  const inputImg = document
+    .getElementById("profileImg")
+    ?.addEventListener("change", (event: Event) => {
+      console.log(event, "hi this is karan");
+      const inputElement = event.target as HTMLInputElement;
+      const file: File | null = inputElement?.files
+        ? inputElement.files[0]
+        : null;
+
+      console.warn("File....", file);
+
+      const imgLink = URL.createObjectURL(file);
+      console.error(".....", imgLink);
+
+      if (imgLink) {
+        const imgElement = document.getElementById(
+          "previewImg",
+        ) as HTMLImageElement;
+
+        imgElement.src = "";
+        imgElement.src = imgLink;
+        if (cropperBox && cropperBox.style) {
+          cropperBox.style.display = "block";
+        }
+
+        if (imageBox && imageBox.style) {
+          imageBox.style.display = "none";
+        }
+      }
+    });
+</script>

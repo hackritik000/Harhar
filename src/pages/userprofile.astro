@@ -5,7 +5,7 @@ import Input from "@/components/Input.astro";
 import Layout from "@/layouts/Layout.astro";
 import { isInputError } from "astro:actions";
 import { actions } from "astro:actions";
-
+import Cropper from "@/components/Cropper.astro";
 const result = Astro.getActionResult(actions.userprofile.updateUserProfile);
 const inputError = isInputError(result?.error) ? result.error.fields : {};
 
@@ -39,12 +39,7 @@ if (result && !result?.error) {
 </style>
 <Layout title="userprofile">
   <form method="post" action={actions.userprofile.updateUserProfile}>
-    <div class="imgbox">
-      <label id="profilelabel" for="profileImg">
-        <img id="previewImg" src="./profile.png" alt="" />
-      </label>
-      <input id="profileImg" type="file" />
-    </div>
+    <Cropper />
     <Input
       id="firstName"
       name="firstName"
@@ -85,27 +80,3 @@ if (result && !result?.error) {
     <button>Update Profile</button>
   </form>
 </Layout>
-<script>
-  // import { imageConfig } from "astro:assets";
-
-  const inputImg = document.getElementById("profileImg") as HTMLInputElement;
-  inputImg.addEventListener("change", (event: Event) => {
-    if (inputImg.files && inputImg.files[0]) {
-      console.log(inputImg.files[0]);
-      const reader = new FileReader();
-      console.log(reader);
-      reader.onload = function (e: ProgressEvent<FileReader>) {
-        const previewImg = document.getElementById(
-          "previewImg",
-        ) as HTMLImageElement;
-        console.log("on load hai");
-        if (e.target && e.target.result) {
-          console.log("file src set  hai");
-          previewImg.src = e.target.result as string;
-        }
-
-        reader.readAsDataURL(inputImg.files[0]); // Convert t
-      };
-    }
-  });
-</script>
