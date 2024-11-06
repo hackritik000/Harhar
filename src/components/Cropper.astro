@@ -1,47 +1,14 @@
-<style>
-  .imgbox {
-    border: 1px solid white;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    cursor: pointer;
-    /* display: flex;
-      align-items: center;
-      justify-content: center; */
-  }
-  #profileImg {
-    display: none;
-    width: 100px;
-  }
-  label#profilelabel img {
-    width: 100px;
-    height: 100px;
-    cursor: pointer;
-  }
-
-  /* cropper css */
-  #cropperBox {
-    display: none;
-  }
-  .preview {
-    border-radius: 50%;
-    overflow: hidden;
-    width: 200px; /* Set width and height */
-    height: 200px;
-  }
-</style>
-
-<div id="imgBox">
+<div class="imgBox" id="imgBox">
   <label id="profilelabel" for="profileImg">
     <img id="previewImg" src="./profile.png" alt="" />
   </label>
   <input id="profileImg" type="file" accept="image/*" />
 </div>
 
-<div id="cropperBox">
+<div class="cropperBox" id="cropperBox">
   <div class="preview"></div>
-  <div>
-    <img id="previewImg" src={"/profile.png"} alt="Profile Image" />
+  <div class="divPreviewImg">
+    <img id="previewImg" alt="Profile Image" />
   </div>
 
   <!-- Button to Crop the Image -->
@@ -54,8 +21,33 @@
   </div>
 </div>
 
-<style>
-  /* Make the preview circular */
+<style lang="scss">
+  .imgBox {
+    border: 3px solid red;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    cursor: pointer;
+    img {
+      display: none;
+      width: 100px;
+      height: 100px;
+      cursor: pointer;
+    }
+  }
+
+  .cropperBox {
+    display: none;
+    border: 3px solid darkblue;
+    position: absolute;
+    inset: 50px;
+    .preview {
+      border-radius: 50%;
+      overflow: hidden;
+      width: 200px; /* Set width and height */
+      height: 200px;
+    }
+  }
 </style>
 
 <script>
@@ -79,9 +71,6 @@
       },
     });
   }
-
-  //   cropBtn.addEventListener("click", cropImage);
-
   // Ensure the cropper is initialized when the DOM is ready
   document.addEventListener("DOMContentLoaded", () => {
     initializeCropper();
@@ -121,14 +110,16 @@
           "previewImg",
         ) as HTMLImageElement;
 
+        const divPreviewImg = document.querySelector(".divPreviewImg");
+
+        console.log(imgElement);
+        imgElement.setAttribute("data-set", "hello");
         imgElement.src = "";
         imgElement.src = imgLink;
+        divPreviewImg?.append(imgElement);
+        console.log(imgElement);
         if (cropperBox && cropperBox.style) {
           cropperBox.style.display = "block";
-        }
-
-        if (imageBox && imageBox.style) {
-          imageBox.style.display = "none";
         }
       }
     });

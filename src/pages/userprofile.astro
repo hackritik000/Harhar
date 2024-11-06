@@ -39,7 +39,7 @@ if (result && !result?.error) {
 </style>
 <Layout title="userprofile">
   <form method="post" action={actions.userprofile.updateUserProfile}>
-    <Cropper />
+    <Cropper client:visible />
     <Input
       id="firstName"
       name="firstName"
