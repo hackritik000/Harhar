@@ -88,35 +88,24 @@ if (result && !result?.error) {
 <script>
   // import { imageConfig } from "astro:assets";
 
-  const inputImg = document
-    .getElementById("profileImg")
-    ?.addEventListener("change", (event: Event) => {
-      console.log(event, "hi this is karan");
-      const inputElement = event.target as HTMLInputElement;
-      const file: File | null = inputElement?.files
-        ? inputElement.files[0]
-        : null;
+  const inputImg = document.getElementById("profileImg") as HTMLInputElement;
+  inputImg.addEventListener("change", (event: Event) => {
+    if (inputImg.files && inputImg.files[0]) {
+      console.log(inputImg.files[0]);
+      const reader = new FileReader();
+      console.log(reader);
+      reader.onload = function (e: ProgressEvent<FileReader>) {
+        const previewImg = document.getElementById(
+          "previewImg",
+        ) as HTMLImageElement;
+        console.log("on load hai");
+        if (e.target && e.target.result) {
+          console.log("file src set  hai");
+          previewImg.src = e.target.result as string;
+        }
 
-        console.warn("File....",file)
-
-      if (file) {
-        const reader = new FileReader();
-
-        reader.onload = function (e: ProgressEvent<FileReader>) {
-          const imgElement = document.getElementById(
-            "preview",
-          ) as HTMLImageElement;
-
-          console.error("....Error",e.target?.result)
-
-          if (e.target && e.target.result) {
-            imgElement.src = e.target.result as string;
-          } 
-
-          reader.readAsDataURL(file); // Convert t
-        };
-      }
-    });
-  const inputFileLocation = document.getElementById("profileImg");
-  //console.log(inputFileLocation,"........");
+        reader.readAsDataURL(inputImg.files[0]); // Convert t
+      };
+    }
+  });
 </script>
