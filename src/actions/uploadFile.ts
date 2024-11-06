@@ -10,6 +10,7 @@ export const uploadFile = {
       file: z.instanceof(File),
     }),
     handler: async (input) => {
+      console.log("jhaklsdf")
       try {
         const result = await uploadImage(input.file);
         console.log(result);

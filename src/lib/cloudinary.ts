@@ -13,10 +13,11 @@ cloudinary.config({
 });
 
 export const uploadImage = async (file: File): Promise<UploadApiResponse> => {
+  console.log("hello")
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   const fileName = Date.now() + Math.round(Math.random() * 5) + ".png";
-  const filePath = path.join(process.cwd(), "/", fileName);
+  const filePath = path.join(process.cwd(), "/public/uploads/", fileName);
   fs.writeFile(filePath, buffer, (error) => {
     if (error) {
       console.log(error);

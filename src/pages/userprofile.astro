@@ -16,8 +16,35 @@ if (result && !result?.error) {
 }
 ---
 
+<style>
+  .imgbox {
+    border: 1px solid white;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    cursor: pointer;
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+  }
+  #profileImg {
+    display: none;
+    width: 100px;
+  }
+  label#profilelabel img {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+  }
+</style>
 <Layout title="userprofile">
   <form method="post" action={actions.userprofile.updateUserProfile}>
+    <div class="imgbox">
+      <label id="profilelabel" for="profileImg">
+        <img id="previewImg" src="./profile.png" alt="" />
+      </label>
+      <input id="profileImg" type="file" />
+    </div>
     <Input
       id="firstName"
       name="firstName"
@@ -58,3 +85,35 @@ if (result && !result?.error) {
     <button>Update Profile</button>
   </form>
 </Layout>
+<script>
+  // import { imageConfig } from "astro:assets";
+
+  const inputImg = document
+    .getElementById("profileImg")
+    ?.addEventListener("change", (event: Event) => {
+      console.log(event, "hi this is karan");
+      const inputElement = event.target as HTMLInputElement;
+      const file: File | null = inputElement?.files
+        ? inputElement.files[0]
+        : null;
+
+        console.warn("File....",file)
+
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function (e: ProgressEvent<FileReader>) {
+          const imgElement = document.getElementById(
+            "preview",
+          ) as HTMLImageElement;
+
+          if (e.target && e.target.result) {
+            imgElement.src = e.target.result as string;
+          } 
+          reader.readAsDataURL(file); // Convert t
+        };
+      }
+    });
+  const inputFileLocation = document.getElementById("profileImg");
+  //console.log(inputFileLocation,"........");
+</script>
