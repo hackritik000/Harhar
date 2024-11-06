@@ -8,7 +8,6 @@
 <div class="cropperBox" id="cropperBox">
   <div class="preview"></div>
   <div class="divPreviewImg">
-    <img id="previewImg" alt="Profile Image" />
   </div>
 
   <!-- Button to Crop the Image -->
@@ -41,13 +40,23 @@
     border: 3px solid darkblue;
     position: absolute;
     inset: 50px;
+    background-color: aquamarine;
+    z-index: 10;
     .preview {
       border-radius: 50%;
       overflow: hidden;
       width: 200px; /* Set width and height */
       height: 200px;
     }
+   
   }
+</style>
+<style is:global>
+   .previewImg{
+      display: block;
+      max-width: 100%;
+      
+    }
 </style>
 
 <script>
@@ -58,7 +67,7 @@
   const cropBtn = document.querySelector("#crop-btn") as HTMLButtonElement;
 
   function initializeCropper() {
-    const image = document.getElementById("image") as HTMLImageElement;
+    const image = document.querySelector(".previewImg") as HTMLImageElement;
 
     cropper = new Cropper(image, {
       aspectRatio: 1,
@@ -73,20 +82,20 @@
   }
   // Ensure the cropper is initialized when the DOM is ready
   document.addEventListener("DOMContentLoaded", () => {
-    initializeCropper();
+    
   });
 
   function cropImage() {
     if (cropper) {
       const croppedCanvas = cropper.getCroppedCanvas();
       const croppedImage = document.getElementById(
-        "croppedImage",
+        "previewImg",
       ) as HTMLImageElement;
       croppedImage.src = croppedCanvas.toDataURL();
     }
   }
 
-  cropImage();
+  
 
   // image upload code
   const cropperBox = document.getElementById("cropperBox") as HTMLDivElement;
@@ -106,21 +115,22 @@
       console.error(".....", imgLink);
 
       if (imgLink) {
-        const imgElement = document.getElementById(
-          "previewImg",
+        const imgElement = document.createElement(
+          "img",
         ) as HTMLImageElement;
 
         const divPreviewImg = document.querySelector(".divPreviewImg");
-
-        console.log(imgElement);
-        imgElement.setAttribute("data-set", "hello");
         imgElement.src = "";
         imgElement.src = imgLink;
+        imgElement.className = "previewImg";
         divPreviewImg?.append(imgElement);
-        console.log(imgElement);
         if (cropperBox && cropperBox.style) {
           cropperBox.style.display = "block";
         }
+        console.log("hi")
+        initializeCropper();
+        cropImage();
+        console.log("hi")
       }
     });
 </script>
