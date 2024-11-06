@@ -107,9 +107,12 @@ if (result && !result?.error) {
             "preview",
           ) as HTMLImageElement;
 
+          console.error("....Error",e.target?.result)
+
           if (e.target && e.target.result) {
             imgElement.src = e.target.result as string;
           } 
+
           reader.readAsDataURL(file); // Convert t
         };
       }
