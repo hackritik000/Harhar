@@ -5,7 +5,7 @@ import { TooManyRequest } from "@/utils/tooManyRequest";
 import { z } from "astro/zod";
 import { ActionError } from "astro:actions";
 import { defineAction } from "astro:actions";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 
 export const userprofile = {
   updateUserProfile: defineAction({
@@ -71,8 +71,8 @@ export const userprofile = {
       const user = await db
         .select()
         .from(userProfile)
-        .where(eq(userProfile.userId, ctx.locals.user.id));
-      return user.at(0);
+        .where(or(eq(userProfile.userId, ctx.locals.user.id),eq(userProfile.email, ctx.locals.user.email)));
+      // return user.at(0);
     },
   }),
 };

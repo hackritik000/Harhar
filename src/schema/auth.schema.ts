@@ -8,8 +8,11 @@ import {
 
 export const userTable = pgTable('user', {
   id: text('id').primaryKey(),
+  email: varchar('email', { length: 50 }).unique(),
   username: varchar('username', { length: 50 }).unique(),
   password_hash: text('password_hash'),
+  reset_token: varchar("reset_token", { length: 255 }), // Token for resetting password
+  reset_token_expiry: timestamp("reset_token_expiry", { mode: "date" }), // Token expiry time
   isAdmin: boolean('isAdmin').default(false),
 });
 
