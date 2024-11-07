@@ -1,3 +1,7 @@
+---
+import "cropperjs/dist/cropper.css";
+---
+
 <div class="imgBox" id="imgBox">
   <label id="profilelabel" for="profileImg">
     <img id="previewImg" src="./profile.png" alt="" />
@@ -6,17 +10,18 @@
 </div>
 
 <div class="cropperBox" id="cropperBox">
-  <div class="preview"></div>
-  <div class="divPreviewImg">
-  </div>
-
-  <!-- Button to Crop the Image -->
-  <button id="crop-btn">Crop Image</button>
-
-  <!-- Canvas to Display the Cropped Image -->
   <div>
-    <h3>Cropped Image:</h3>
-    <img id="croppedImage" alt="Cropped Image" />
+    <div class="preview"></div>
+    <div class="divPreviewImg"></div>
+
+    <!-- Button to Crop the Image -->
+    <button id="crop-btn">Crop Image</button>
+
+    <!-- Canvas to Display the Cropped Image -->
+    <div>
+      <h3>Cropped Image:</h3>
+      <img id="croppedImage" alt="Cropped Image" />
+    </div>
   </div>
 </div>
 
@@ -39,24 +44,31 @@
     display: none;
     border: 3px solid darkblue;
     position: absolute;
-    inset: 50px;
+    width: 80%;
+    height: 80%;
+    overflow-y: scroll;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     background-color: aquamarine;
     z-index: 10;
+    & > div {
+      position: relative;
+      width: 100%;
+    }
     .preview {
       border-radius: 50%;
       overflow: hidden;
       width: 200px; /* Set width and height */
       height: 200px;
     }
-   
   }
 </style>
 <style is:global>
-   .previewImg{
-      display: block;
-      max-width: 100%;
-      
-    }
+  .previewImg {
+    display: block;
+    max-width: 100%;
+  }
 </style>
 
 <script>
@@ -81,9 +93,7 @@
     });
   }
   // Ensure the cropper is initialized when the DOM is ready
-  document.addEventListener("DOMContentLoaded", () => {
-    
-  });
+  document.addEventListener("DOMContentLoaded", () => {});
 
   function cropImage() {
     if (cropper) {
@@ -94,8 +104,6 @@
       croppedImage.src = croppedCanvas.toDataURL();
     }
   }
-
-  
 
   // image upload code
   const cropperBox = document.getElementById("cropperBox") as HTMLDivElement;
@@ -115,9 +123,7 @@
       console.error(".....", imgLink);
 
       if (imgLink) {
-        const imgElement = document.createElement(
-          "img",
-        ) as HTMLImageElement;
+        const imgElement = document.createElement("img") as HTMLImageElement;
 
         const divPreviewImg = document.querySelector(".divPreviewImg");
         imgElement.src = "";
@@ -127,10 +133,10 @@
         if (cropperBox && cropperBox.style) {
           cropperBox.style.display = "block";
         }
-        console.log("hi")
+        console.log("hi");
         initializeCropper();
         cropImage();
-        console.log("hi")
+        console.log("hi");
       }
     });
 </script>
