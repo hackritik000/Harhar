@@ -4,11 +4,14 @@ import Layout from "../layouts/Layout.astro";
 import Logout from "@/components/Logout.astro";
 import { actions } from "astro:actions";
 import {getCurruntLocation} from "@/utils/Location"
+import {getLocationByIP} from "@/utils/getLocationByIP"
 
 const user = Astro.locals.user;
-const location= getCurruntLocation()
 
-console.log(location,"here is my location")
+const location = getLocationByIP()
+// console.log(location)
+
+// console.log(location,"here is my location")
 
 
 
