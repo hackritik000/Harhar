@@ -34,11 +34,22 @@ import "cropperjs/dist/cropper.css";
     height: 100px;
     border-radius: 50%;
     cursor: pointer;
-    img {
+    position: relative;
+    overflow: hidden;
+    label {
+      display: block;
+      height: 100%;
+      width: 100%;
+      img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+    }
+    input {
       display: none;
-      width: 100px;
-      height: 100px;
-      cursor: pointer;
+      position: absolute;
     }
   }
 
@@ -82,6 +93,7 @@ import "cropperjs/dist/cropper.css";
 
   const cropBtn = document.querySelector("#crop-btn") as HTMLButtonElement;
 
+  cropBtn.addEventListener("click", cropImage);
   function initializeCropper() {
     const image = document.querySelector(".previewImg") as HTMLImageElement;
 
@@ -96,23 +108,23 @@ import "cropperjs/dist/cropper.css";
       },
     });
   }
-  // Ensure the cropper is initialized when the DOM is ready
-  document.addEventListener("DOMContentLoaded", () => {});
 
-  function cropImage() {
-    if (cropper) {
-      const croppedCanvas = cropper.getCroppedCanvas();
-      const croppedImage = document.getElementById(
-        "previewImg  ",
-      ) as HTMLImageElement;
-      croppedImage.src = croppedCanvas.toDataURL();
-    }
-  }
 
   // image upload code
   const cropperBox = document.getElementById("cropperBox") as HTMLDivElement;
   const imageBox = document.getElementById("imgBox") as HTMLDivElement;
 
+  function cropImage(e: Event) {
+    if (cropper) {
+      e.preventDefault();
+      const croppedCanvas = cropper.getCroppedCanvas();
+      const croppedImage = document.getElementById(
+        "previewImg",
+      ) as HTMLImageElement;
+      croppedImage.src = croppedCanvas.toDataURL();
+          cropperBox.style.display = "none";
+    }
+  }
   const inputImg = document
     .getElementById("profileImg")
     ?.addEventListener("change", (event: Event) => {
@@ -140,7 +152,6 @@ import "cropperjs/dist/cropper.css";
         }
         console.log("hi");
         initializeCropper();
-        cropImage();
         console.log("hi");
       }
     });
