@@ -3,8 +3,18 @@ export const prerender = false;
 import Layout from "../layouts/Layout.astro";
 import Logout from "@/components/Logout.astro";
 import { actions } from "astro:actions";
+import {getCurruntLocation} from "@/utils/Location"
 
 const user = Astro.locals.user;
+const location= getCurruntLocation()
+
+console.log(location,"here is my location")
+
+
+
+
+
+
 if (!user) {
   // console.log("user not found");
 } else {

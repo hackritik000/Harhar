@@ -68,7 +68,7 @@ import "cropperjs/dist/cropper.css";
     z-index: 10;
     & > div {
       display: flex;
-      position: relative;
+      position: relative; 
       width: 100%;
     }
     .preview {
@@ -109,7 +109,6 @@ import "cropperjs/dist/cropper.css";
     });
   }
 
-
   // image upload code
   const cropperBox = document.getElementById("cropperBox") as HTMLDivElement;
   const imageBox = document.getElementById("imgBox") as HTMLDivElement;
@@ -122,7 +121,7 @@ import "cropperjs/dist/cropper.css";
         "previewImg",
       ) as HTMLImageElement;
       croppedImage.src = croppedCanvas.toDataURL();
-          cropperBox.style.display = "none";
+      cropperBox.style.display = "none";
     }
   }
   const inputImg = document
@@ -135,9 +134,10 @@ import "cropperjs/dist/cropper.css";
         : null;
 
       console.warn("File....", file);
+      // console.warn("inputIMg", inputImg.);
 
       const imgLink = URL.createObjectURL(file);
-      console.error(".....", imgLink);
+      // console.error(".....", imgLink);
 
       if (imgLink) {
         const imgElement = document.createElement("img") as HTMLImageElement;
@@ -145,14 +145,15 @@ import "cropperjs/dist/cropper.css";
         const divPreviewImg = document.querySelector(".divPreviewImg");
         imgElement.src = "";
         imgElement.src = imgLink;
+
         imgElement.className = "previewImg";
         divPreviewImg?.append(imgElement);
         if (cropperBox && cropperBox.style) {
           cropperBox.style.display = "block";
         }
-        console.log("hi");
+        // console.log("hi");
         initializeCropper();
-        console.log("hi");
+        // console.log("hi");
       }
     });
 </script>
