@@ -1,11 +1,10 @@
 ---
 import "cropperjs/dist/cropper.css";
-import { uploadImage } from "@/lib/cloudinary";
 ---
 
 <div class="imgBox" id="imgBox">
   <label id="profilelabel" for="profileImg">
-    <img id="previewImg" src="./profile.png" alt="" />
+    <img id="oldImg" src="./profile.png" alt="" />
   </label>
   <input id="profileImg" type="file" accept="image/*" />
 </div>
@@ -23,7 +22,7 @@ import { uploadImage } from "@/lib/cloudinary";
     <!-- Canvas to Display the Cropped Image -->
     <div>
       <h3>Cropped Image:</h3>
-      <img id="croppedImage" alt="Cropped Image" />
+      <!-- <img id="croppedImage" alt="Cropped Image" /> -->
     </div>
   </div>
 </div>
@@ -69,7 +68,7 @@ import { uploadImage } from "@/lib/cloudinary";
     z-index: 10;
     & > div {
       display: flex;
-      position: relative; 
+      position: relative;
       width: 100%;
     }
     .preview {
@@ -88,9 +87,8 @@ import { uploadImage } from "@/lib/cloudinary";
 </style>
 
 <script>
-
-import { uploadImage } from "@/lib/cloudinary";
-import Cropper from "cropperjs";
+  import { getFileFromImg } from "@/utils/getFileFromImg";
+  import Cropper from "cropperjs";
 
   let cropper: Cropper;
 
@@ -113,20 +111,29 @@ import Cropper from "cropperjs";
   }
 
   // image upload code
+
   const cropperBox = document.getElementById("cropperBox") as HTMLDivElement;
+  const oldImg = document.getElementById("oldImg");
+
   const imageBox = document.getElementById("imgBox") as HTMLDivElement;
 
-  function cropImage(e: Event) {
+  async function cropImage(e: Event) {
     if (cropper) {
       e.preventDefault();
       const croppedCanvas = cropper.getCroppedCanvas();
       const croppedImage = document.getElementById(
-        "previewImg",
+        "oldImg",
       ) as HTMLImageElement;
+      console.log("...cropper Image......", croppedImage);
+      const croppedFile = await getFileFromImg(croppedImage);
+      console.log("File of this img is here ", croppedFile);
       croppedImage.src = croppedCanvas.toDataURL();
+      console.log("old Img is here ", oldImg);
       cropperBox.style.display = "none";
+      return croppedImage;
     }
   }
+
   const inputImg = document
     .getElementById("profileImg")
     ?.addEventListener("change", (event: Event) => {
@@ -138,10 +145,7 @@ import Cropper from "cropperjs";
 
       console.warn("File....", file);
       // console.warn("inputIMg", inputImg.);
-
       const imgLink = URL.createObjectURL(file);
-      const clouduploadResult = uploadImage(file)
-      console.log(clouduploadResult,"result of cloudnary")
 
       // console.error(".....", imgLink);
 
