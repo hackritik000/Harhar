@@ -3,15 +3,16 @@ export const prerender = false;
 import Layout from "../layouts/Layout.astro";
 import Logout from "@/components/Logout.astro";
 import { actions } from "astro:actions";
-import {getCurruntLocation} from "@/utils/Location"
-import {getLocationByIP} from "@/utils/getLocationByIP"
+// import {getCurruntLocation} from "@/utils/Location"
+// import {getLocationByIP} from "@/utils/getLocationByIP"
 
 const user = Astro.locals.user;
 
-const location = getLocationByIP()
+// const location = get
 // console.log(location)
 
 // console.log(location,"here is my location")
+
 
 
 
@@ -52,3 +53,10 @@ if (!user) {
     <Logout />
   </main>
 </Layout>
+<script>
+import { getCurrentLocation } from "@/utils/Location";
+
+  const data = await getCurrentLocation();
+  console.log("data------>->->-->-->->",data.address.city)
+  
+</script>

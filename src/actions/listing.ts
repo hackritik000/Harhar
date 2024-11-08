@@ -26,7 +26,7 @@ export const listing = {
       }
 
       const listingDetails = await db.select().from(businessDetails);
-      if (listingDetails.length < 0) {
+      if (listingDetails.length <= 0) {
         throw new ActionError({
           code: "INTERNAL_SERVER_ERROR",
           message: "There is no listing in your db",
@@ -39,12 +39,32 @@ export const listing = {
   showMyListing: defineAction({
     accept: "json",
     handler: async (input, ctx) => {
+      if (TooManyRequest(ctx)) {
+        throw new ActionError({
+          code: "TOO_MANY_REQUESTS",
+        });
+      }
+      // console.log("loggin user ------>", ctx.locals.user?.username);
+      if (!ctx.locals.user?.id) {
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+          message: "user is not found",
+        });
+      }
+
       const myListing = await db
         .select()
         .from(businessDetails)
-        .where(eq(businessDetails.ownerName, ""));
+        .where(eq(businessDetails.userId, ctx.locals.user?.id));
 
-        console.log(myListing)
+      // console.log(myListing)
+
+      if (myListing.length <= 0) {
+        throw new ActionError({
+          code: "NOT_FOUND",
+          message: "There is no listing! Please create a new listings",
+        });
+      }
 
       return myListing;
     },

@@ -1,5 +1,6 @@
 ---
 import "cropperjs/dist/cropper.css";
+import { uploadImage } from "@/lib/cloudinary";
 ---
 
 <div class="imgBox" id="imgBox">
@@ -87,7 +88,9 @@ import "cropperjs/dist/cropper.css";
 </style>
 
 <script>
-  import Cropper from "cropperjs";
+
+import { uploadImage } from "@/lib/cloudinary";
+import Cropper from "cropperjs";
 
   let cropper: Cropper;
 
@@ -137,6 +140,9 @@ import "cropperjs/dist/cropper.css";
       // console.warn("inputIMg", inputImg.);
 
       const imgLink = URL.createObjectURL(file);
+      const clouduploadResult = uploadImage(file)
+      console.log(clouduploadResult,"result of cloudnary")
+
       // console.error(".....", imgLink);
 
       if (imgLink) {
