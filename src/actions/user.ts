@@ -95,6 +95,7 @@ export const user = {
           /^[a-zA-Z0-9_-]+$/,
           "Username can only contain letters, numbers, underscores, and dashes",
         ),
+      email: z.string().email("Please enter a valid email address"),
       password: z
         .string()
         .min(8, "Password must be at least 8 characters long")
@@ -109,7 +110,6 @@ export const user = {
     }),
 
     handler: async (input, ctx: NewApiContext) => {
-      console.log("Validation passed", input);
       if (TooManyRequest(ctx)) {
         throw new ActionError({
           code: "TOO_MANY_REQUESTS",
@@ -133,6 +133,7 @@ export const user = {
       await db.insert(userTable).values({
         id: userId,
         username: input.username,
+        email: input.email,
         password_hash,
       });
 
@@ -175,11 +176,16 @@ export const user = {
       email: z.string().email("Please enter a valid email address"),
     }),
     handler: async (input, ctx: NewApiContext) => {
-      const { email } = input;
+      if (TooManyRequest(ctx)) {
+        throw new ActionError({
+          code: "TOO_MANY_REQUESTS",
+        });
+      }
+
       const existingUser = await db
         .select()
         .from(userTable)
-        .where(eq(userTable.email, email));
+        .where(eq(userTable.email, input.email));
 
       if (existingUser.length === 0) {
         throw new ActionError({
@@ -190,16 +196,18 @@ export const user = {
 
       // Generate a reset token and save it to the database with an expiry
       const resetToken = generateIdFromEntropySize(16); // Or use another method to generate tokens
+
       const resetTokenExpiry = new Date(Date.now() + 1000 * 60 * 60); // 1 hour from now
 
       await db
         .update(userTable)
         .set({ reset_token: resetToken, reset_token_expiry: resetTokenExpiry })
-        .where(eq(userTable.email, email));
+        .where(eq(userTable.email, input.email));
 
       // Send password reset email
-      const resetLink = `${ctx.url.origin}/reset-password?token=${resetToken}`;
-      await sendPasswordResetEmail(email, resetLink);
+      const resetLink = `${ctx.url.origin}/resetpassword?token=${resetToken}`;
+
+      await sendPasswordResetEmail(input.email, resetLink);
 
       return { message: "Password reset link sent to your email" };
     },
@@ -221,27 +229,26 @@ export const user = {
         ),
     }),
     handler: async (input, ctx: NewApiContext) => {
-      const { token, newPassword } = input;
+      if (TooManyRequest(ctx)) {
+        throw new ActionError({
+          code: "TOO_MANY_REQUESTS",
+        });
+      }
 
       // Find user by reset token
-      // const user = await db
-      //   .select()
-      //   .from(userTable)
-      //   .where(eq(userTable.reset_token, token))
-      //   .where(
-      //     userTable.reset_token_expiry.gt(new Date()), // Ensure token has not expired
-      //   );
       const user = await db
         .select()
         .from(userTable)
         .where(
           or(
-            eq(userTable.reset_token, token),
+            eq(userTable.reset_token, input.token),
             gt(userTable.reset_token_expiry, new Date()),
           ),
-        )
+        );
 
-      if (!user || user.length === 0) {
+      console.log("user", user);
+
+      if (!user || user.length === 0 || !user[0]) {
         throw new ActionError({
           code: "UNAUTHORIZED",
           message: "Invalid or expired reset token",
@@ -249,7 +256,7 @@ export const user = {
       }
 
       // Hash the new password and update the user record
-      const password_hash = await hash(newPassword, HASH_OPTION);
+      const password_hash = await hash(input.newPassword, HASH_OPTION);
       await db
         .update(userTable)
         .set({

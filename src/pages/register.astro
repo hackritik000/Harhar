@@ -28,6 +28,15 @@ const inputError = isInputError(result?.error) ? result.error.fields : {};
       inputError={inputError}
     />
     <Input
+      type="email"
+      name="email"
+      id="email"
+      className="showError"
+      pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+      placeholder="Enter Your Email"
+      inputError={inputError}
+    />
+    <Input
       type="password"
       name="password"
       id="password"
@@ -51,6 +60,3 @@ const inputError = isInputError(result?.error) ? result.error.fields : {};
     </div>
   </form>
 </Layout>
-
-
-
