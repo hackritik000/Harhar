@@ -1,4 +1,5 @@
 import type { NewApiContext } from "@/interface/extended.interface";
+import { uploadImage } from "@/lib/cloudinary";
 import { db } from "@/lib/db";
 import { userProfile } from "@/schema/userprofile.schema";
 import { TooManyRequest } from "@/utils/tooManyRequest";
@@ -11,51 +12,68 @@ export const userprofile = {
   updateUserProfile: defineAction({
     accept: "form",
     input: z.object({
-      firstName: z
-        .string()
-        .min(3, "Username must be at least 3 characters long")
-        .max(30, "Username must be at most 30 characters long"),
-      lastName: z
-        .string()
-        .min(3, "Username must be at least 3 characters long")
-        .max(30, "Username must be at most 30 characters long"),
-      email: z.string().email("Invalid Email formet"),
-      phone: z
-        .string()
-        .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format"),
+      firstName: z.string(),
+      // .min(3, "Username must be at least 3 characters long")
+      // .max(30, "Username must be at most 30 characters long"),
+      lastName: z.string(),
+      // .min(3, "Username must be at least 3 characters long")
+      // .max(30, "Username must be at most 30 characters long"),
+      email: z.string(),
+      // .email("Invalid Email formet"),
+      phone: z.string(),
+      // .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format"),
       address: z.string(),
       city: z.string(),
+      userProfileImg: z.instanceof(File),
     }),
     handler: async (input, ctx) => {
+      console.log("hello1");
       // console.log("input", input);
       if (TooManyRequest(ctx)) {
         throw new ActionError({
           code: "TOO_MANY_REQUESTS",
         });
       }
+
+      console.log("hello2");
       if (!ctx.locals.user?.id) {
         throw new ActionError({
           code: "UNAUTHORIZED",
         });
       }
+      console.log("hello3");
       const existingUser = await db
         .select()
         .from(userProfile)
         .where(eq(userProfile.userId, ctx.locals.user?.id));
 
+      console.log("hello4");
+      let ImageResult;
+      try {
+        const result = await uploadImage(input.userProfileImg);
+        console.log(result);
+        ImageResult = result;
+      } catch (error) {
+        console.log(error);
+      }
+
+      console.log("hello5");
       if (existingUser.length === 0) {
         // No user profile found, insert new profile
         await db.insert(userProfile).values({
           ...input,
           userId: ctx.locals.user?.id,
         });
+        console.log("hello6");
       } else {
         // Update existing profile
         await db
           .update(userProfile)
           .set(input)
           .where(eq(userProfile.userId, ctx.locals.user?.id));
+        console.log("hello7");
       }
+      console.log("hello8");
       return true;
     },
   }),
@@ -71,7 +89,12 @@ export const userprofile = {
       const user = await db
         .select()
         .from(userProfile)
-        .where(or(eq(userProfile.userId, ctx.locals.user.id),eq(userProfile.email, ctx.locals.user.email)));
+        .where(
+          or(
+            eq(userProfile.userId, ctx.locals.user.id),
+            eq(userProfile.email, ctx.locals.user.email),
+          ),
+        );
       // return user.at(0);
     },
   }),

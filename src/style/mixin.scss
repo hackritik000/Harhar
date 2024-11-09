@@ -1,5 +1,5 @@
 @use "sass:meta";
-@mixin autoMinMaxSize(
+@mixin autoMinMaxFontSize(
   $property,
   $minSize,
   $maxSize,
@@ -19,6 +19,33 @@
 
   #{$property}: clamp(
     ($minSize * 1px),
+    calc(
+      ($minSize * 1px) + ($maxSize - $minSize) * (100vw - ($minviewport * 1px)) /
+        ($maxviewport - $minviewport)
+    ),
+    ($maxSize * 1px)
+  );
+}
+@mixin autoMinMaxSize(
+  $property,
+  $minSize,
+  $maxSize,
+  $minviewport: 320,
+  $maxviewport: 1024
+) {
+  @if (meta.type-of($property) != "string") {
+    @error "property must be css property";
+  }
+  @if (meta.type-of($minSize) != "number") or
+    (meta.type-of($maxSize) != "number") or
+    (meta.type-of($minviewport) != "number") or
+    (meta.type-of($maxviewport) != "number")
+  {
+    @error "minSize and maxSize and minviewport and maxviewport must be numbers";
+  }
+
+  #{$property}: clamp(
+    min(100%, ($minSize * 1px)),
     calc(
       ($minSize * 1px) + ($maxSize - $minSize) * (100vw - ($minviewport * 1px)) /
         ($maxviewport - $minviewport)
