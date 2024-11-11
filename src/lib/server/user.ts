@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { userTable as users } from "@/schema/auth.schema"; // Assuming `users` table schema is defined here
 import { generateIdFromEntropySize } from "lucia";
 
-export async function createUser(
+export default async function createUser(
   googleId: string,
   email: string,
   username: string,

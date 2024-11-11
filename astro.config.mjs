@@ -1,15 +1,15 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
-import node from '@astrojs/node';
+import node from "@astrojs/node";
 
 export default defineConfig({
   security: {
     checkOrigin: true,
   },
 
-  output: 'hybrid',
+  output: "server",
 
   adapter: node({
-    mode: 'standalone',
+    mode: "standalone",
   }),
 });

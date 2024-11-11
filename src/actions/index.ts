@@ -5,6 +5,7 @@ import { listing } from "./listing";
 import { smallActions } from "./smallActions";
 import { userprofile } from "./userprofile";
 import { uploadFile } from "./uploadFile";
+import { oauthGoogleAuth } from "./googleauth";
 export const server = {
   user,
   business,
@@ -12,4 +13,5 @@ export const server = {
   smallActions,
   userprofile,
   uploadFile,
+  oauthGoogleAuth,
 };
