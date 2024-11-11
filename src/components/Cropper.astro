@@ -1,38 +1,136 @@
 ---
+const { name, src = "./profile.png" } = Astro.props;
 import "cropperjs/dist/cropper.css";
-import { uploadImage } from "@/lib/cloudinary";
 ---
 
-<div class="imgBox" id="imgBox">
-  <label id="profilelabel" for="profileImg">
-    <img id="previewImg" src="./profile.png" alt="" />
+<div class="cropperForm">
+  <label for="cropperFormInput">
+    <img class="cropperFormImg" src={src} alt="profile Image" />
   </label>
-  <input id="profileImg" type="file" accept="image/*" />
+  <input id="cropperFormInput" type="file" name={name} accept="image/*" />
 </div>
 
-<div class="cropperBox" id="cropperBox">
+<div class="cropperBox">
   <div>
+    <div class="canvasContainer"></div>
     <div>
-      <div class="preview"></div>
-      <div class="divPreviewImg"></div>
-
-      <!-- Button to Crop the Image -->
-      <button id="crop-btn">Crop Image</button>
-    </div>
-
-    <!-- Canvas to Display the Cropped Image -->
-    <div>
-      <h3>Cropped Image:</h3>
-      <img id="croppedImage" alt="Cropped Image" />
+      <div class="croppedPreview"></div>
+      <button class="cropBtn">Crop Image</button>
     </div>
   </div>
 </div>
 
+<script>
+  import Cropper from "cropperjs";
+  let cropper: Cropper;
+
+  const cropperFormImg = document.querySelector(
+    ".cropperFormImg",
+  ) as HTMLImageElement;
+  const cropperFormInput = document.getElementById(
+    "cropperFormInput",
+  ) as HTMLInputElement;
+  const cropperBox = document.querySelector(".cropperBox") as HTMLDivElement;
+  const canvasContainer = document.querySelector(
+    ".canvasContainer",
+  ) as HTMLDivElement;
+  const cropBtn = document.querySelector(".cropBtn") as HTMLButtonElement;
+
+  cropperFormInput.addEventListener("change", (event: Event) => {
+    const inputElement = event.target as HTMLInputElement;
+    if (!inputElement.files || !inputElement.files[0]) {
+      return;
+    }
+    const file = inputElement.files[0];
+    const blobURL = URL.createObjectURL(file);
+    if (!blobURL) {
+      return;
+    }
+    const canvasImg = document.createElement("img") as HTMLImageElement;
+    canvasImg.src = blobURL;
+    canvasImg.className = "canvasImg";
+    canvasContainer?.append(canvasImg);
+    initializeCropper();
+    cropperBox.style.display = "block";
+  });
+
+  function initializeCropper() {
+    const canvasImg = document.querySelector(".canvasImg") as HTMLImageElement;
+    cropper = new Cropper(canvasImg, {
+      aspectRatio: 1,
+      viewMode: 0,
+      preview: ".croppedPreview",
+    });
+  }
+
+  cropBtn.addEventListener("click", (e: Event) => {
+    if (!cropper) {
+      return;
+    }
+    e.preventDefault();
+    const croppedCanvas = cropper.getCroppedCanvas();
+    cropperFormImg.src = croppedCanvas.toDataURL();
+
+    cropper.getCroppedCanvas().toBlob((blob) => {
+      if (!blob) {
+        return;
+      }
+      const croppedFile = new File(
+        [blob],
+        "croppedImage." + blob?.type.split("image/").at(1),
+        {
+          type: blob?.type,
+        },
+      );
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(croppedFile);
+      cropperFormInput.files = dataTransfer.files;
+    });
+    cropperBox.style.display = "none";
+  });
+</script>
+
 <style lang="scss">
-  .imgBox {
-    border: 3px solid red;
-    width: 100px;
-    height: 100px;
+  @use "@/style/mixin.scss" as m;
+  .cropperBox {
+    container-type: inline-size;
+    & > div {
+      display: flex;
+      position: relative;
+      flex-wrap: wrap;
+      width: 100%;
+      flex-direction: row;
+      .croppedPreview {
+        border-radius: 50%;
+        overflow: hidden;
+        aspect-ratio: 16/9;
+        @include m.autoMinMaxSize("width", 100, 200);
+      }
+    }
+    display: none;
+    border: 3px solid darkblue;
+    position: absolute;
+    aspect-ratio: 1;
+    @media screen and (min-width: 486px) {
+      aspect-ratio: 16/9;
+      .croppedPreview {
+        height: 100%;
+        aspect-ratio: 1;
+      }
+    }
+    @include m.autoMinMaxSize("width", 320, 900);
+    overflow-y: scroll;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: aquamarine; // change this
+    z-index: 10;
+  }
+
+  .cropperForm {
+    border: 1px solid silver;
+    width: 100%;
+    aspect-ratio: 1;
     border-radius: 50%;
     cursor: pointer;
     position: relative;
@@ -43,123 +141,18 @@ import { uploadImage } from "@/lib/cloudinary";
       width: 100%;
       img {
         display: block;
-        width: 100%;
-        height: 100%;
-        cursor: pointer;
+        width: inherit;
+        height: inherit;
       }
     }
     input {
       display: none;
-      position: absolute;
-    }
-  }
-
-  .cropperBox {
-    display: none;
-
-    border: 3px solid darkblue;
-    position: absolute;
-    width: 80%;
-    height: 80%;
-    overflow-y: scroll;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: aquamarine;
-    z-index: 10;
-    & > div {
-      display: flex;
-      position: relative; 
-      width: 100%;
-    }
-    .preview {
-      border-radius: 50%;
-      overflow: hidden;
-      width: 200px; /* Set width and height */
-      height: 200px;
     }
   }
 </style>
 <style is:global>
-  .previewImg {
+  .canvasImg {
     display: block;
     max-width: 100%;
   }
 </style>
-
-<script>
-
-import { uploadImage } from "@/lib/cloudinary";
-import Cropper from "cropperjs";
-
-  let cropper: Cropper;
-
-  const cropBtn = document.querySelector("#crop-btn") as HTMLButtonElement;
-
-  cropBtn.addEventListener("click", cropImage);
-  function initializeCropper() {
-    const image = document.querySelector(".previewImg") as HTMLImageElement;
-
-    cropper = new Cropper(image, {
-      aspectRatio: 1,
-      viewMode: 1,
-      preview: ".preview",
-
-      crop(event) {
-        console.log(event.detail.x);
-        console.log(event.detail.y);
-      },
-    });
-  }
-
-  // image upload code
-  const cropperBox = document.getElementById("cropperBox") as HTMLDivElement;
-  const imageBox = document.getElementById("imgBox") as HTMLDivElement;
-
-  function cropImage(e: Event) {
-    if (cropper) {
-      e.preventDefault();
-      const croppedCanvas = cropper.getCroppedCanvas();
-      const croppedImage = document.getElementById(
-        "previewImg",
-      ) as HTMLImageElement;
-      croppedImage.src = croppedCanvas.toDataURL();
-      cropperBox.style.display = "none";
-    }
-  }
-  const inputImg = document
-    .getElementById("profileImg")
-    ?.addEventListener("change", (event: Event) => {
-      console.log(event, "hi this is karan");
-      const inputElement = event.target as HTMLInputElement;
-      const file: File | null = inputElement?.files
-        ? inputElement.files[0]
-        : null;
-
-      console.warn("File....", file);
-      // console.warn("inputIMg", inputImg.);
-
-      const imgLink = URL.createObjectURL(file);
-      const clouduploadResult = uploadImage(file)
-      console.log(clouduploadResult,"result of cloudnary")
-
-      // console.error(".....", imgLink);
-
-      if (imgLink) {
-        const imgElement = document.createElement("img") as HTMLImageElement;
-
-        const divPreviewImg = document.querySelector(".divPreviewImg");
-        imgElement.src = "";
-        imgElement.src = imgLink;
-
-        imgElement.className = "previewImg";
-        divPreviewImg?.append(imgElement);
-        if (cropperBox && cropperBox.style) {
-          cropperBox.style.display = "block";
-        }
-        // console.log("hi");
-        initializeCropper();
-        // console.log("hi");
-      }
-    });
-</script>
