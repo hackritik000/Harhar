@@ -1,26 +1,15 @@
 ---
-export const prerender = false;
 import { actions } from "astro:actions";
 import Layout from "../layouts/Layout.astro";
 import "@/style/form.scss";
 import "@/style/components.scss";
-import Toast from "@/components/Toast.astro";
-
-const result = Astro.getActionResult(actions.oauthGoogleAuth);
-console.log(result);
-
-const toastMessage = result?.error ? result.error.message : "";
 ---
 
-<Layout title="Login Page">
-  <div class="error">
-    {result?.error && result.error.message}
-    {toastMessage && <Toast message={toastMessage} />}
-  </div>
-  <form method="post" action={actions.oauthGoogleAuth}>
-    <a href="/api/login/google">Sign in with Google</a>
-  </form>
-  <div>
-    <button type="submit">Login</button>
-  </div>
+<Layout title="Login Page with google">
+  <from action={actions.oauthGoogleAuth.index}>
+    <button type="submit">
+      sign in with google
+    </button>
+  </from>
+  <a href={actions.oauthGoogleAuth.index}>Sign in with Google</a>
 </Layout>
