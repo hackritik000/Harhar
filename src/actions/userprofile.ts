@@ -63,13 +63,17 @@ export const userprofile = {
       }
 
       console.log("hello5");
-      if (existingUser.length === 0) {
+      console.log("Exit user",existingUser)
+      if (existingUser.length<=0) {
         // No user profile found, insert new profile
+        console.log("inser profile")
         await db.insert(userProfile).values({
           ...input,
           userProfileImg:ImageResult.url,
           userId: ctx.locals.user?.id,
         });
+        
+        
         console.log("hello6");
       } else {
         // Update existing profile

@@ -10,6 +10,7 @@ const result = Astro.getActionResult(actions.userprofile.updateUserProfile);
 const inputError = isInputError(result?.error) ? result.error.fields : {};
 
 const oldUser = await Astro.callAction(actions.userprofile.getUserProfile, {});
+console.log("old user data",oldUser)
 let oldUserData = oldUser.data;
 if (result && !result?.error) {
   return Astro.redirect("/");
@@ -24,7 +25,7 @@ if (result && !result?.error) {
 <Layout title="userprofile">
   <form method="post" action={actions.userprofile.updateUserProfile}>
     <div>
-      <Cropper name="userProfileImg" />
+      <Cropper name="userProfileImg" src={oldUserData?.userProfileImg} />
     </div>
     <Input
       id="firstName"
