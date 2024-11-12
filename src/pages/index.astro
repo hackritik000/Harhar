@@ -14,12 +14,12 @@ const user = Astro.locals.user;
 // console.log(location,"here is my location")
 
 if (!user) {
-  // console.log("user not found");
+  console.log("user not found");
 } else {
-  // console.log("user found");
+  console.log("user found");
 }
 
-console.log(actions.oauthGoogleAuth);
+// console.log(actions.oauthGoogleAuth);
 ---
 
 <!-- src/components/UploadForm.astro -->
@@ -55,4 +55,3 @@ console.log(actions.oauthGoogleAuth);
   const data = await getCurrentLocation();
   console.log("data------>->->-->-->->", data.address.city);
 </script>
-

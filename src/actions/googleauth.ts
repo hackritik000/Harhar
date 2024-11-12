@@ -5,6 +5,8 @@ import {
   generateSessionToken,
   createSession,
   setSessionTokenCookie,
+  invalidateSession,
+  deleteSessionTokenCookie,
 } from "@/lib/server/session";
 import {
   defineAction,
@@ -16,11 +18,15 @@ import createUser, {
   getUserFromGoogleId,
   type GoogleIdTokenClaims,
 } from "@/lib/server/user";
-
+import { z } from "astro:schema";
 // Define the OAuth action
 export const oauthGoogleAuth = {
   callback: defineAction({
+    accept: "json",
+    input: z.object({}),
     handler: async (_, context: ActionAPIContext) => {
+      console.log("hello");
+
       const code = context.url.searchParams.get("code");
       const state = context.url.searchParams.get("state");
       const storedState =
@@ -82,16 +88,26 @@ export const oauthGoogleAuth = {
     },
   }),
 
-  index: defineAction({
-    handler: async (_, context: ActionAPIContext) => {
-      console.log("ranjeet is calling me");
+  googlelogin: defineAction({
+    accept: "form",
+    input: z.object({}),
+    handler: async (
+      _,
+      context: ActionAPIContext,
+    ): Promise<{ redirectUrl: string }> => {
+      console.log("Initiating Google login");
+
+      // Generate state and code verifier
       const state = generateState();
       const codeVerifier = generateCodeVerifier();
+
+      // Generate Google OAuth authorization URL
       const url = google.createAuthorizationURL(state, codeVerifier, [
         "openid",
         "profile",
       ]);
 
+      // Set cookies for state and code verifier
       context.cookies.set("google_oauth_state", state, {
         path: "/",
         secure: import.meta.env.PROD,
@@ -106,9 +122,24 @@ export const oauthGoogleAuth = {
         maxAge: 60 * 10, // 10 minutes
         sameSite: "lax",
       });
+
+      // Return the URL as a JSON response
+      return { redirectUrl: url.toString() };
+    },
+  }),
+
+  logout: defineAction({
+    handler: async (_, context: ActionAPIContext) => {
+      if (context.locals.session === null) {
+        return new Response(null, {
+          status: 401,
+        });
+      }
+      await invalidateSession(context.locals.session.id);
+      deleteSessionTokenCookie(context);
       return new Response(null, {
         status: 200,
-        headers: { Location: url.toString() },
+        headers: { Location: "/login" },
       });
     },
   }),

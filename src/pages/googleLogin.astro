@@ -1,15 +1,21 @@
 ---
+export const prerender = false;
 import { actions } from "astro:actions";
 import Layout from "../layouts/Layout.astro";
 import "@/style/form.scss";
 import "@/style/components.scss";
+
+const result = Astro.getActionResult(actions.oauthGoogleAuth.googlelogin);
+
+const link = result?.data?.redirectUrl;
+if ( result && !result.error) {
+  // Only attempt redirect on the server
+  return Astro.redirect(link);
+}
 ---
 
-<Layout title="Login Page with google">
-  <from action={actions.oauthGoogleAuth.index}>
-    <button type="submit">
-      sign in with google
-    </button>
-  </from>
-  <a href={actions.oauthGoogleAuth.index}>Sign in with Google</a>
+<Layout title="Login Page with Google">
+  <form action={actions.oauthGoogleAuth.googlelogin} method="post">
+    <button type="submit">Sign in with Google</button>
+  </form>
 </Layout>
