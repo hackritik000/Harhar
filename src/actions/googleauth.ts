@@ -124,7 +124,7 @@ export const oauthGoogleAuth = {
       });
 
       // Return the URL as a JSON response
-      return { redirectUrl: url.toString() };
+      return url.toString();
     },
   }),
 

@@ -6,11 +6,18 @@ import "@/style/form.scss";
 import "@/style/components.scss";
 
 const result = Astro.getActionResult(actions.oauthGoogleAuth.googlelogin);
-
-const link = result?.data?.redirectUrl;
-if ( result && !result.error) {
-  // Only attempt redirect on the server
-  return Astro.redirect(link);
+// if (result && !result.error) {
+//   const ranjeet = "https://google.com";
+//   console.log("in no error");
+//   console.log(result);
+//   return Astro.redirect(ranjeet);
+// } else {
+//   console.log(result);
+//   console.log("in error");
+// }
+if (result && result.data) {
+  console.log("karan is working");
+  return Astro.redirect(result.data);
 }
 ---
 
@@ -19,3 +26,4 @@ if ( result && !result.error) {
     <button type="submit">Sign in with Google</button>
   </form>
 </Layout>
+{}
