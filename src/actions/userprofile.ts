@@ -53,8 +53,13 @@ export const userprofile = {
         const result = await uploadImage(input.userProfileImg);
         console.log(result);
         ImageResult = result;
+        
       } catch (error) {
         console.log(error);
+        throw new ActionError({
+          code:"INTERNAL_SERVER_ERROR",
+          message:error.message
+        })
       }
 
       console.log("hello5");
@@ -62,6 +67,7 @@ export const userprofile = {
         // No user profile found, insert new profile
         await db.insert(userProfile).values({
           ...input,
+          userProfileImg:ImageResult.url,
           userId: ctx.locals.user?.id,
         });
         console.log("hello6");
@@ -69,7 +75,7 @@ export const userprofile = {
         // Update existing profile
         await db
           .update(userProfile)
-          .set(input)
+          .set({...input,userProfileImg:ImageResult.url})
           .where(eq(userProfile.userId, ctx.locals.user?.id));
         console.log("hello7");
       }
@@ -92,10 +98,10 @@ export const userprofile = {
         .where(
           or(
             eq(userProfile.userId, ctx.locals.user.id),
-            eq(userProfile.email, ctx.locals.user.email),
           ),
         );
-      // return user.at(0);
+      
+        return user.at(0)
     },
   }),
 };
