@@ -7,6 +7,8 @@ import { actions } from "astro:actions";
 import Layout from "@/layouts/Layout.astro";
 import Select from "@/components/Select.astro";
 const result = Astro.getActionResult(actions.business.addBusiness);
+const allCategory= await Astro.callAction(actions.smallActions.allCategories,{})
+// console.log(allCategory,"all len")
 const inputError = isInputError(result?.error) ? result.error.fields : {};
 // const {error,data} = Astro.getActionResult(actions.smallActions.allCities)
 
@@ -23,11 +25,15 @@ const inputError = isInputError(result?.error) ? result.error.fields : {};
     <Input name="ownerName" id="owner_name" inputError={inputError} />
     <Input name="email" id="email" inputError={inputError} />
     <Input name="phone" id="phone" inputError={inputError} />
-    <Input name="category" id="category" inputError={inputError} />
+    <!-- <Input name="category" id="category" inputError={inputError} /> -->
     <Input name="address" id="address" inputError={inputError} />
     <Input name="city" id="city" inputError={inputError} />
-    <Select >
-      <!-- <option value="">Jodhpur</option> -->
+    <Select id="category" name="category" >
+      <!-- <option>ok</option> -->
+      {allCategory.data?.map((category)=>{
+        // console.log(category.category)
+       return <option>{category.category}</option>
+      })}
     </Select>
     <Input name="websiteLink" id="website_link" inputError={inputError} />
     <Input

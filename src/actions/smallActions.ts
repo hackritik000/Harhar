@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { cities } from "@/schema/small.schema";
+import { catagories, cities } from "@/schema/small.schema";
 import { TooManyRequest } from "@/utils/tooManyRequest";
 import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
@@ -44,6 +44,29 @@ export const smallActions = {
 
       await db.select().from(cities).execute();
       return;
+    },
+  }),
+
+  allCategories: defineAction({
+    accept:"json",
+    handler: async (_, ctx) => {
+      if (TooManyRequest(ctx)) {
+        throw new ActionError({
+          code: "TOO_MANY_REQUESTS",
+        });
+      }
+
+      const allCategories = await db.select().from(catagories).execute();
+      if (allCategories.length <= 0) {
+        throw new ActionError({
+          code: "NOT_FOUND",
+          message: "There is no categories",
+        });
+      }
+
+      
+
+      return allCategories;
     },
   }),
 };

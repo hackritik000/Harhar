@@ -7,7 +7,8 @@ import { z } from "astro/zod";
 import { ActionError } from "astro:actions";
 import { defineAction } from "astro:actions";
 import { eq, or } from "drizzle-orm";
-
+import { catagories } from "@/schema/small.schema";
+import { categoriesData } from "@/utils/catData";
 export const userprofile = {
   updateUserProfile: defineAction({
     accept: "form",
@@ -18,6 +19,7 @@ export const userprofile = {
       lastName: z.string(),
       // .min(3, "Username must be at least 3 characters long")
       // .max(30, "Username must be at most 30 characters long"),
+      gender:z.string(),
       email: z.string(),
       // .email("Invalid Email formet"),
       phone: z.string(),
@@ -28,6 +30,8 @@ export const userprofile = {
     }),
     handler: async (input, ctx) => {
       console.log("hello1");
+
+    
       // console.log("input", input);
       if (TooManyRequest(ctx)) {
         throw new ActionError({
@@ -72,6 +76,8 @@ export const userprofile = {
           userProfileImg:ImageResult.url,
           userId: ctx.locals.user?.id,
         });
+        
+
         
         
         console.log("hello6");

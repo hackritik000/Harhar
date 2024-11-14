@@ -2,6 +2,7 @@
 export const prerender = false;
 import Addcity from "@/components/Addcity.astro";
 import Input from "@/components/Input.astro";
+import Select from "@/components/Select.astro";
 import Layout from "@/layouts/Layout.astro";
 import { isInputError } from "astro:actions";
 import { actions } from "astro:actions";
@@ -10,7 +11,7 @@ const result = Astro.getActionResult(actions.userprofile.updateUserProfile);
 const inputError = isInputError(result?.error) ? result.error.fields : {};
 
 const oldUser = await Astro.callAction(actions.userprofile.getUserProfile, {});
-console.log("old user data",oldUser)
+console.log("old user data", oldUser);
 let oldUserData = oldUser.data;
 if (result && !result?.error) {
   return Astro.redirect("/");
@@ -39,6 +40,12 @@ if (result && !result?.error) {
       value={oldUserData?.lastName}
       inputError={inputError}
     />
+    <Select id="gender" name="gender">
+      <option>Select Your Gender</option>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+      <option value="others">Others</option>
+    </Select>
     <Input
       id="email"
       name="email"
