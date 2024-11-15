@@ -23,12 +23,17 @@ import { z } from "astro:schema";
 export const oauthGoogleAuth = {
   callback: defineAction({
     accept: "json",
-    input: z.object({}),
-    handler: async (_, context: ActionAPIContext) => {
+    input: z.object({
+      code: z.string(),
+      state: z.string(),
+    }),
+    handler: async (input, context: ActionAPIContext): Promise<boolean> => {
       console.log("hello");
 
-      const code = context.url.searchParams.get("code");
-      const state = context.url.searchParams.get("state");
+      // const code = context.url.searchParams.get("code");
+      // const state = context.url.searchParams.get("state");
+      const code = input.code;
+      const state = input.state;
       const storedState =
         context.cookies.get("google_oauth_state")?.value ?? null;
       const codeVerifier =
@@ -59,12 +64,15 @@ export const oauthGoogleAuth = {
         });
       }
 
+      console.log(tokens);
       const claims = decodeIdToken(tokens.idToken()) as GoogleIdTokenClaims;
+      console.log(claims);
       const googleUserId = claims.sub;
-      const email = claims.email;
+      // const email = claims.email;
       const username = claims.name;
 
-      if (!email || !username || googleUserId) {
+      if (!username || !googleUserId) {
+        console.log("----------------------------");
         throw new ActionError({
           code: "BAD_REQUEST",
           message: "Something went wrong",
@@ -76,20 +84,24 @@ export const oauthGoogleAuth = {
         const sessionToken = generateSessionToken();
         const session = await createSession(sessionToken, existingUser.id);
         setSessionTokenCookie(context, sessionToken, session.expiresAt);
-        return new Response(null, { status: 200, headers: { Location: "/" } });
+        return true;
       }
 
       // Create new user and session if the user doesn't exist
-      const user = await createUser(googleUserId, email, username); // Replace with actual DB query
+      const user = await createUser(
+        googleUserId,
+        "hackritik000@gmail.com",
+        username,
+      ); // Replace with actual DB query
       const sessionToken = generateSessionToken();
       const session = await createSession(sessionToken, user.id);
       setSessionTokenCookie(context, sessionToken, session.expiresAt);
-      return new Response(null, { status: 200, headers: { Location: "/" } });
+      return true;
     },
   }),
 
   googlelogin: defineAction({
-    accept: "form",
+    accept: "json",
     input: z.object({}),
     handler: async (
       _,
@@ -123,8 +135,7 @@ export const oauthGoogleAuth = {
         sameSite: "lax",
       });
 
-      // Return the URL as a JSON response
-      return url.toString();
+      return { redirectUrl: url.href };
     },
   }),
 

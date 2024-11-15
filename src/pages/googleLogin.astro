@@ -1,29 +1,13 @@
 ---
 export const prerender = false;
 import { actions } from "astro:actions";
-import Layout from "../layouts/Layout.astro";
 import "@/style/form.scss";
 import "@/style/components.scss";
 
-const result = Astro.getActionResult(actions.oauthGoogleAuth.googlelogin);
-// if (result && !result.error) {
-//   const ranjeet = "https://google.com";
-//   console.log("in no error");
-//   console.log(result);
-//   return Astro.redirect(ranjeet);
-// } else {
-//   console.log(result);
-//   console.log("in error");
-// }
-if (result && result.data) {
-  console.log("karan is working");
-  return Astro.redirect(result.data);
+const result = await Astro.callAction(actions.oauthGoogleAuth.googlelogin, {});
+if (result && !result.error) {
+  return Astro.redirect(result.data.redirectUrl);
 }
 ---
 
-<Layout title="Login Page with Google">
-  <form action={actions.oauthGoogleAuth.googlelogin} method="post">
-    <button type="submit">Sign in with Google</button>
-  </form>
-</Layout>
-{}
+<!-- http://localhost:4321/?_astroAction=oauthGoogleAuth.callback&state=h5zbtTODKfRZGUG543kR1TphcZUnKHvlcjSW9BThUoY&code=4%2F0AeanS0Ze2LMrX8Dicse1G_D29s5FGi5vUlVqmlTzQQKX5pIx5D660xQtlT5mt2Q14r0HEw&scope=profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=0&prompt=none --><!-- // --><!-- https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=727367355224-v43gbpbiqv7f19qogqv0idhdet254rt7.apps.googleusercontent.com&state=h5zbtTODKfRZGUG543kR1TphcZUnKHvlcjSW9BThUoY&scope=openid+profile&redirect_uri=http%3A%2F%2Flocalhost%3A4321%2F%3F_astroAction%3DoauthGoogleAuth.callback&code_challenge_method=S256&code_challenge=ZhdUJIhwWoWT5jqaK5p90kXmYSv0U1ZbCFFE9s2FP7c -->

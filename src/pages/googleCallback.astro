@@ -1,0 +1,24 @@
+---
+import { actions } from "astro:actions";
+const code = Astro.url.searchParams.get("code");
+const state = Astro.url.searchParams.get("state");
+
+if (!code || !state) {
+  console.log("code and state not found");
+} else {
+  console.log("inside else");
+  const result = await Astro.callAction(actions.oauthGoogleAuth.callback, {
+    code,
+    state,
+  });
+  if (result && !result.error) {
+    if (result.data) {
+      return Astro.redirect("/");
+    }
+  } else {
+    console.log(result.error);
+  }
+}
+---
+
+<!-- http://localhost:4321/googleCallback?state=Tqztza_-wub9s5JNoixLdrKuq9u2Ou-U7YtnRwrWfNE&code=4%2F0AeanS0adIoDBX0F6eIL4Bkn9R8zvuxlST1RXEG58m0EBGFmfOQqMnpsOIcsSoasmJnj6_Q&scope=profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&authuser=0&prompt=none -->
