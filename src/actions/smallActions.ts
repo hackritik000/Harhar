@@ -3,6 +3,7 @@ import { catagories, cities } from "@/schema/small.schema";
 import { TooManyRequest } from "@/utils/tooManyRequest";
 import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
+import { eq } from "drizzle-orm";
 
 export const smallActions = {
   showAddCity: defineAction({
@@ -56,7 +57,7 @@ export const smallActions = {
         });
       }
 
-      const allCategories = await db.select().from(catagories).execute();
+      const allCategories = await db.select().from(catagories)
       if (allCategories.length <= 0) {
         throw new ActionError({
           code: "NOT_FOUND",
@@ -64,6 +65,8 @@ export const smallActions = {
         });
       }
 
+      const filterCategories = allCategories.filter((categories,index,self)=>categories.id==categories.id)
+      console.log("filtered Data",filterCategories)
       
 
       return allCategories;
