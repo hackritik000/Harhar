@@ -1,7 +1,8 @@
 import { db } from "@/lib/db";
-import { catagories, cities } from "@/schema/small.schema";
+import { catagories, cities, subcategories } from "@/schema/small.schema";
 import { TooManyRequest } from "@/utils/tooManyRequest";
 import { ActionError, defineAction } from "astro:actions";
+import { categoriesDataWithIcon } from "@/utils/categoriesWithIcon";
 import { z } from "astro:schema";
 import { eq } from "drizzle-orm";
 
@@ -72,4 +73,24 @@ export const smallActions = {
       return allCategories;
     },
   }),
+
+  seed:defineAction({
+    accept:"json",
+    handler:async(_,ctx)=>{
+
+    for(const cat of categoriesDataWithIcon){
+
+      // await db.insert(catagories).values({
+      //   category:cat.category,
+      //   icon:cat.icon
+      // })
+    }
+      const allMainCat = await db.select().from(catagories)
+      for(let i=1;i<=allMainCat.length;i++){
+
+        // await db.insert(subcategories).values()
+      }
+      // console.log(allMainCat)
+    }
+  })
 };

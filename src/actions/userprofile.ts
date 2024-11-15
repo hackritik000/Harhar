@@ -8,7 +8,7 @@ import { ActionError } from "astro:actions";
 import { defineAction } from "astro:actions";
 import { eq, or } from "drizzle-orm";
 import { catagories } from "@/schema/small.schema";
-import { categoriesData } from "@/utils/catData";
+import { categoriesDataWithIcon } from "@/utils/categoriesWithIcon";
 export const userprofile = {
   updateUserProfile: defineAction({
     accept: "form",
@@ -31,7 +31,7 @@ export const userprofile = {
     handler: async (input, ctx) => {
       console.log("hello1");
 
-    
+      
       // console.log("input", input);
       if (TooManyRequest(ctx)) {
         throw new ActionError({
