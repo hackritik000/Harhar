@@ -72,7 +72,6 @@ export const oauthGoogleAuth = {
       const username = claims.name;
 
       if (!username || !googleUserId) {
-        console.log("----------------------------");
         throw new ActionError({
           code: "BAD_REQUEST",
           message: "Something went wrong",
@@ -80,6 +79,7 @@ export const oauthGoogleAuth = {
       }
 
       const existingUser = await getUserFromGoogleId(googleUserId); // Replace with actual DB query
+
       if (existingUser !== null) {
         const sessionToken = generateSessionToken();
         const session = await createSession(sessionToken, existingUser.id);
@@ -87,7 +87,6 @@ export const oauthGoogleAuth = {
         return true;
       }
 
-      // Create new user and session if the user doesn't exist
       const user = await createUser(
         googleUserId,
         "hackritik000@gmail.com",

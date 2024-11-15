@@ -8,7 +8,7 @@ import {
 
 export const userTable = pgTable("user", {
   id: text("id").primaryKey(),
-  // googleId: text("google_id")
+  googleId: text("google_id"),
   email: varchar("email", { length: 50 }).unique(),
   username: varchar("username", { length: 50 }).unique(),
   password_hash: text("password_hash"),
