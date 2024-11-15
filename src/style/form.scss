@@ -14,13 +14,11 @@ form {
     outline: 2px solid red;
     border-radius: 2px;
     border: 1px solid black;
+    background-image: none;
   }
 
   input:valid:not(:placeholder-shown) {
     background-image: url(/images/icon-park--correct.svg);
-  }
-
-  input:valid:not(:placeholder-shown) {
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: calc(100% - 10px);
@@ -39,4 +37,3 @@ form {
     pointer-events: none;
   }
 }
-

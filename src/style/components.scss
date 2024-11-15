@@ -53,6 +53,22 @@ button {
 input{
   padding-right: 80px;
 }
+
+label {
+  display: block;
+  font-size: 1rem;
+  color: var(--primary); // Use the primary color from your theme
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.password-wrapper {
+  position: relative;
+}
+input {
+  padding-right: 80px;
+}
 .toggle-password {
   position: absolute;
   right: 35px;
@@ -64,14 +80,3 @@ input{
   background-size: contain;
   cursor: pointer;
 }
-
-
-label {
-  display: block;
-  font-size: 1rem;
-  color: var(--primary); // Use the primary color from your theme
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-

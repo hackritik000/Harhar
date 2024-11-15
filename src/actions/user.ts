@@ -17,11 +17,11 @@ export const user = {
     input: z.object({
       username: z
         .string()
-        .min(3)
-        .max(30, "Username must be at most 30 characters long")
+        .min(3, "Username or email must be at least 3 characters long")
+        .max(30, "Username or email must be at most 30 characters long")
         .regex(
-          /^[a-zA-Z0-9_-]+$/,
-          "Username can only contain letters, numbers, underscores, and dashes",
+          /^(?:[a-zA-Z0-9_-]{3,30}|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/,
+          "Username can only contain letters, numbers, underscores, and dashes, or must be a valid email address",
         ),
       password: z
         .string()
@@ -43,9 +43,15 @@ export const user = {
       }
 
       const existingUser = await db
-        .select()
-        .from(userTable)
-        .where(eq(userTable.username, input.username));
+      .select()
+      .from(userTable)
+      .where(
+        or(
+          eq(userTable.username, input.username),
+          eq(userTable.email, input.username)
+        )
+      );
+    
       if (!existingUser || existingUser.length <= 0) {
         throw new ActionError({
           code: "UNAUTHORIZED",
@@ -119,12 +125,17 @@ export const user = {
       const existingUser = await db
         .select()
         .from(userTable)
-        .where(eq(userTable.username, input.username));
+        .where(
+          or(
+            eq(userTable.username, input.username),
+            eq(userTable.email, input.email)
+          )
+        );
 
       if (existingUser.length > 0) {
         throw new ActionError({
           code: "UNAUTHORIZED",
-          message: "username already exist",
+          message: "username or email already exist",
         });
       }
 

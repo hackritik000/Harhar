@@ -6,7 +6,7 @@ import Layout from "../layouts/Layout.astro";
 import Input from "@/components/Input.astro";
 import "@/style/form.scss";
 import "@/style/components.scss";
-import Toast from "@/components/Toast.astro";
+import ShowHidePassword from "@/components/Show&HidePassword.astro";
 
 const result = Astro.getActionResult(actions.user.login);
 console.log(result);
@@ -16,35 +16,36 @@ const user = Astro.locals.user;
 if (user) {
   return Astro.redirect("/");
 }
-
-const toastMessage = result?.error ? result.error.message : "";
 ---
 
 <Layout title="Login Page">
-  <div class="error">
-    {result?.error && result.error.message}
-    {toastMessage && <Toast message={toastMessage} />}
+  <div class="error-container">
+    <div class="error">
+      {result?.error && result.error.message}
+    </div>
   </div>
   <form method="post" action={actions.user.login}>
     <Input
-      name="username"
-      id="username"
-      pattern="^[a-zA-Z][a-zA-Z0-9_]{2,15}$"
-      className="showError"
-      placeholder="Enter Your Username"
-      inputError={inputError}
-    />
+    name="username"
+    id="username"
+    pattern="(^[a-zA-Z][a-zA-Z0-9_]{2,15}$)|(^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)"
+    className="showError password"
+    placeholder="Enter Your Username or Email"
+    inputError={inputError}
+  />
+  
     <div class="password-wrapper">
       <Input
         type="password"
         name="password"
         id="password"
         pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$"
-        className="showError"
+        className="showError password"
         placeholder="Enter Your Password"
         inputError={inputError}
       />
-      <span class="toggle-password" id="togglePassword"></span>
+      <!-- <span class="toggle-password" id="togglePassword"></span> -->
+       <ShowHidePassword />
     </div>
 
     <div class="forgot-password">
@@ -61,22 +62,22 @@ const toastMessage = result?.error ? result.error.message : "";
 </Layout>
 
 <script>
-  const passwordInput = document.getElementById("password") as HTMLInputElement;
-  const togglePassword = document.getElementById(
-    "togglePassword",
-  ) as HTMLSpanElement;
+  // const passwordInput = document.getElementById("password") as HTMLInputElement;
+  // const togglePassword = document.getElementById(
+  //   "togglePassword",
+  // ) as HTMLSpanElement;
 
-  togglePassword.addEventListener("click", () => {
-    const type =
-      passwordInput.getAttribute("type") == "password" ? "text" : "password";
-    passwordInput.setAttribute("type", type);
+  // togglePassword.addEventListener("click", () => {
+  //   const type =
+  //     passwordInput.getAttribute("type") == "password" ? "text" : "password";
+  //   passwordInput.setAttribute("type", type);
 
-    if (type == "password") {
-      togglePassword.style.backgroundImage =
-        "url('/public/images/mdi--eye.svg')";
-    } else {
-      togglePassword.style.backgroundImage =
-        "url('/public/images/mdi--eye-off.svg')";
-    }
-  });
+  //   if (type == "password") {
+  //     togglePassword.style.backgroundImage =
+  //       "url('/public/images/mdi--eye.svg')";
+  //   } else {
+  //     togglePassword.style.backgroundImage =
+  //       "url('/public/images/mdi--eye-off.svg')";
+  //   }
+  // });
 </script>

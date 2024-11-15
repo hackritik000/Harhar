@@ -6,6 +6,7 @@ import { isInputError } from "astro:actions";
 import { actions } from "astro:actions";
 import "@/style/form.scss";
 import "@/style/components.scss";
+// import ShowHidePassword from "@/components/Show&HidePassword.astro";
 
 const result = Astro.getActionResult(actions.user.register);
 if (result?.error) {
@@ -15,8 +16,10 @@ const inputError = isInputError(result?.error) ? result.error.fields : {};
 ---
 
 <Layout title="Register">
-  <div class="error">
-    {result?.error && !inputError && result.error.message}
+  <div class="error-container">
+    <div class="error">
+      {result?.error && result.error.message}
+    </div>
   </div>
   <form id="register" method="post" action={"/login" + actions.user.register}>
     <Input
@@ -36,27 +39,94 @@ const inputError = isInputError(result?.error) ? result.error.fields : {};
       placeholder="Enter Your Email"
       inputError={inputError}
     />
-    <Input
-      type="password"
-      name="password"
-      id="password"
-      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$"
-      className="showError"
-      placeholder="Enter Your Password"
-      inputError={inputError}
-    />
-
-    <Input
-      type="password"
-      name="confirmPassword"
-      id="confirmPassword"
-      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$"
-      className="showError"
-      placeholder="Confirm Your Password"
-      inputError={inputError}
-    />
+    <div class="password-wrapper">
+      <Input
+        type="password"
+        name="password"
+        id="password"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$"
+        className="showError"
+        placeholder="Enter Your Password"
+        inputError={inputError}
+        value=""
+      />
+      <span class="toggle-password" id="togglePassword"></span>
+    </div>
+    <div class="password-wrapper">
+      <Input
+        type="password"
+        name="confirmPassword"
+        id="confirmPassword"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$"
+        className="showError"
+        placeholder="Confirm Your Password"
+        inputError={inputError}
+        value=""
+      />
+      <span class="toggle-password" id="toggleConfirmPassword"></span>
+    </div>
     <div>
       <button type="submit">Register</button>
     </div>
   </form>
 </Layout>
+
+<script>
+  const password = document.getElementById("password") as HTMLInputElement;
+  const confirmPassword = document.getElementById(
+    "confirmPassword",
+  ) as HTMLInputElement;
+
+  confirmPassword.addEventListener("input", () => {
+    if (password.value === confirmPassword.value) {
+      confirmPassword.setCustomValidity(""); // Clear any previous invalid state
+    } else {
+      confirmPassword.setCustomValidity("Passwords do not match");
+    }
+  });
+
+  const passwordInput = document.getElementById("password") as HTMLInputElement;
+  const confirmPasswordInput = document.getElementById(
+    "confirmPassword",
+  ) as HTMLInputElement;
+  const togglePassword = document.getElementById(
+    "togglePassword",
+  ) as HTMLSpanElement;
+  const toggleConfirmPassword = document.getElementById(
+    "toggleConfirmPassword",
+  ) as HTMLSpanElement;
+
+  // Toggle password visibility
+  togglePassword.addEventListener("click", () => {
+    console.log("clicked");
+    const type =
+      passwordInput.getAttribute("type") === "password" ? "text" : "password";
+    passwordInput.setAttribute("type", type);
+
+    if (type === "password") {
+      togglePassword.style.backgroundImage =
+        "url('/public/images/mdi--eye.svg')";
+    } else {
+      togglePassword.style.backgroundImage =
+        "url('/public/images/mdi--eye-off.svg')";
+    }
+  });
+
+  // Toggle confirmPassword visibility
+  toggleConfirmPassword.addEventListener("click", () => {
+    console.log("clicked");
+    const type =
+      confirmPasswordInput.getAttribute("type") === "password"
+        ? "text"
+        : "password";
+    confirmPasswordInput.setAttribute("type", type);
+
+    if (type === "password") {
+      toggleConfirmPassword.style.backgroundImage =
+        "url('/public/images/mdi--eye.svg')";
+    } else {
+      toggleConfirmPassword.style.backgroundImage =
+        "url('/public/images/mdi--eye-off.svg')";
+    }
+  });
+</script>
