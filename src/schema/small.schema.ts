@@ -1,4 +1,4 @@
-import { pgTable, varchar, timestamp, serial, text } from "drizzle-orm/pg-core";
+import { pgTable, varchar, timestamp, serial } from "drizzle-orm/pg-core";
 export const cities = pgTable("cities", {
   id: serial("id").primaryKey().notNull(),
   city: varchar("city", { length: 100 }).notNull(),

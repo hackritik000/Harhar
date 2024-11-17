@@ -5,6 +5,7 @@ import { ActionError, defineAction } from "astro:actions";
 import { categoriesDataWithIcon } from "@/utils/categoriesWithIcon";
 import { z } from "astro:schema";
 import { eq } from "drizzle-orm";
+import { cats } from "@/utils/categories";
 
 export const smallActions = {
   showAddCity: defineAction({
@@ -50,7 +51,7 @@ export const smallActions = {
   }),
 
   allCategories: defineAction({
-    accept:"json",
+    accept: "json",
     handler: async (_, ctx) => {
       if (TooManyRequest(ctx)) {
         throw new ActionError({
@@ -58,7 +59,7 @@ export const smallActions = {
         });
       }
 
-      const allCategories = await db.select().from(catagories)
+      const allCategories = await db.select().from(catagories);
       if (allCategories.length <= 0) {
         throw new ActionError({
           code: "NOT_FOUND",
@@ -66,31 +67,23 @@ export const smallActions = {
         });
       }
 
-      const filterCategories = allCategories.filter((categories,index,self)=>categories.id==categories.id)
-      console.log("filtered Data",filterCategories)
-      
+      const filterCategories = allCategories.filter(
+        (categories, index, self) => categories.id == categories.id,
+      );
 
       return allCategories;
     },
   }),
 
-  seed:defineAction({
-    accept:"json",
-    handler:async(_,ctx)=>{
-
-    for(const cat of categoriesDataWithIcon){
-
-      // await db.insert(catagories).values({
-      //   category:cat.category,
-      //   icon:cat.icon
-      // })
-    }
-      const allMainCat = await db.select().from(catagories)
-      for(let i=1;i<=allMainCat.length;i++){
-
-        // await db.insert(subcategories).values()
+  seed: defineAction({
+    accept: "json",
+    handler: async (_, ctx) => {
+      console.log("--------------out------------------");
+      for (const [key, cat] of Object.entries(cats)) {
+        console.log(cat);
+        console.log(key);
+        console.log("--------------------------------");
       }
-      // console.log(allMainCat)
-    }
-  })
+    },
+  }),
 };

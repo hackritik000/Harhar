@@ -4,8 +4,7 @@ import Layout from "@/layouts/Layout.astro"
 import { actions } from "astro:actions"
 // import { contentObservable } from "node_modules/astro/dist/content/utils"
 
-const result = Astro.callAction(actions.smallActions.seed,{})
-console.log(result)
+const result = await Astro.callAction(actions.smallActions.seed,{})
 ---
 
 <Layout title="all seeds">
