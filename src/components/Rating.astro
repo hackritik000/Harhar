@@ -1,0 +1,268 @@
+<div class="container">
+  <div class="wraper">
+    <div class="stars">
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="tooltip rating" data-rating="0.0"></div>
+    </div>
+    <div class="shadows">
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root {
+    --tooltip-color: aliceblue;
+    --star-void-color: hsl(208, 25%, 10%);
+    --star-color: rgb(255, 255, 0);
+    --star-shape: polygon(
+      50% 4%,
+      61% 39%,
+      98% 39%,
+      68% 61%,
+      79% 95%,
+      50% 74%,
+      21% 95%,
+      32% 61%,
+      2% 39%,
+      39% 39%
+    );
+  }
+
+  *,
+  *::before,
+  *::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  /* body { */
+  /*   background-color: hsl(208, 25%, 20%); */
+  /*   display: flex; */
+  /*   align-items: center; */
+  /*   justify-content: center; */
+  /*   min-height: 100vh; */
+  /*   font-size: 16px; */
+  /* } */
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* width: 100%; */
+    position: relative;
+  }
+
+  .wraper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stars,
+  .shadows {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5em 1em;
+    gap: 0.25em;
+  }
+
+  .shadows {
+    z-index: -1;
+    isolation: isolate;
+    pointer-events: none;
+  }
+
+  .stars {
+    cursor: pointer;
+  }
+
+  .star {
+    /*  star shape path  */
+    clip-path: var(--star-shape);
+    background-color: var(--star-void-color);
+    width: 3em;
+    aspect-ratio: 1;
+
+    pointer-events: none;
+  }
+
+  .stars .star {
+    background-color: transparent;
+    background-image: linear-gradient(
+      var(--star-color) 0%,
+      var(--star-color) 100%
+    );
+    background-size: 200%;
+    background-repeat: repeat-y;
+    background-position-x: calc((100 + (100 - var(--star-rate, 0))) * 1%);
+  }
+
+  .tooltip {
+    position: absolute;
+    background-color: var(--tooltip-color);
+    border-radius: var(--tooltip-border-rad, 0.25em);
+    z-index: 100;
+  }
+
+  .rating {
+    padding: 0.25em;
+    transform: translateX(calc(-50% - 1em + var(--rating-pos, 0) * 1px));
+    bottom: calc(100% + 0.5em);
+    filter: drop-shadow(2px 2px 5px black);
+  }
+
+  .rating::after {
+    content: attr(data-rating);
+  }
+
+  .rating::before {
+    content: "";
+    clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+    display: block;
+    position: absolute;
+    background-color: var(--tooltip-color);
+    width: 100%;
+    height: 0.5em;
+    top: calc(100% - 0.25em);
+    left: 0;
+  }
+</style>
+
+<script>
+  const starsContainer = document.getElementsByClassName(
+    "stars",
+  )[0] as HTMLDivElement;
+  if (starsContainer) {
+    const stars = starsContainer.querySelectorAll(".star") as HTMLDivElement;
+    const rating = starsContainer.querySelector(".rating") as HTMLDivElement;
+
+    let width = starsContainer.getBoundingClientRect().width;
+    let height = starsContainer.getBoundingClientRect().height;
+    let x = starsContainer.getBoundingClientRect().left;
+    let y = starsContainer.getBoundingClientRect().top;
+    let right = starsContainer.getBoundingClientRect().right;
+    let bottom = starsContainer.getBoundingClientRect().bottom;
+
+    let starsRect = [];
+    stars.forEach((star) => {
+      starsRect.push(star.getBoundingClientRect());
+    });
+
+    let sumOfRatings = 0;
+    let normalValOfRatings = 0;
+    let decimalValOfRatings = 0;
+
+    function initials(e) {
+      if (e.target !== starsContainer) return;
+
+      let container = e.target;
+
+      width = container.getBoundingClientRect().width;
+      height = container.getBoundingClientRect().height;
+      x = container.getBoundingClientRect().left;
+      y = container.getBoundingClientRect().top;
+      right = container.getBoundingClientRect().right;
+      bottom = container.getBoundingClientRect().bottom;
+
+      for (let i = 0; i < stars.length; i++) {
+        starsRect[i] = stars[i].getBoundingClientRect();
+      }
+    }
+
+    starsContainer.addEventListener("mouseover", (e) => {
+      initials(e);
+      moveMouseOnStarsCreatEvent(); // remove the commentting on this line of code to have the ability to re-add the event listener after removing it
+    }); //for when the height or width of the viewport or the element changes
+
+    function moveMouseOnStarsCreatEvent() {
+      starsContainer.addEventListener("mousemove", moveMouseOnStarsFunction);
+    }
+    moveMouseOnStarsCreatEvent();
+
+    function moveMouseOnStarsFunction(e) {
+      let mousePos = e.clientX - x;
+      starsContainer.style.setProperty("--rating-pos", `${mousePos}`);
+
+      let starIndex = whichStar(e.clientX);
+
+      if (starIndex < 0) {
+        stars.forEach((star) => {
+          star.style.setProperty("--star-rate", "0");
+        });
+
+        sumOfRatings = 0;
+        normalValOfRatings = 0;
+        decimalValOfRatings = 0;
+      } else if (starIndex < stars.length) {
+        sumOfRatings = 0;
+        normalValOfRatings = 0;
+        decimalValOfRatings = 0;
+
+        for (let i = 0; i < starIndex; i++) {
+          stars[i].style.setProperty("--star-rate", "100");
+          sumOfRatings++;
+          normalValOfRatings++;
+        }
+
+        let starPercentage =
+          ((e.clientX - starsRect[starIndex].left) * 100) /
+          starsRect[starIndex].width;
+        if (starPercentage < 100) {
+          starPercentage = starPercentage > 0 ? starPercentage : 0;
+          sumOfRatings += starPercentage / 100;
+          decimalValOfRatings = starPercentage / 100;
+        } else {
+          starPercentage = 100;
+          sumOfRatings++;
+          normalValOfRatings++;
+        }
+
+        stars[starIndex].style.setProperty("--star-rate", `${starPercentage}`);
+
+        for (let i = stars.length - 1; i > starIndex; i--) {
+          stars[i].style.setProperty("--star-rate", "0");
+        }
+      } else {
+        stars.forEach((star) => {
+          star.style.setProperty("--star-rate", "100");
+        });
+
+        sumOfRatings = 5;
+        normalValOfRatings = 5;
+        decimalValOfRatings = 0;
+      }
+
+      sumOfRatings = sumOfRatings.toFixed(1);
+      rating.setAttribute("data-rating", `${sumOfRatings}`);
+    }
+
+    function whichStar(mousePos) {
+      let starIndex = -1;
+
+      for (let i = 0; i < starsRect.length; i++) {
+        let star = starsRect[i];
+
+        if (mousePos < star.left) return starIndex;
+        starIndex++;
+        if (mousePos < star.right) return starIndex;
+      }
+    }
+
+    starsContainer.addEventListener("click", (e) => {
+      starsContainer.removeEventListener("mousemove", moveMouseOnStarsFunction);
+    });
+  }
+</script>
