@@ -79,10 +79,17 @@ export const smallActions = {
     accept: "json",
     handler: async (_, ctx) => {
       console.log("--------------out------------------");
-      for (const [key, cat] of Object.entries(cats)) {
+      for (const [cat, subcat] of Object.entries(cats)) {
         console.log(cat);
-        console.log(key);
-        console.log("--------------------------------");
+        console.log(subcat);
+        // key
+        // db select cat
+        // cat.id
+        //
+        // for subcat .length
+        // db inset cat.id subcat
+        // db get categories
+        //
       }
     },
   }),
