@@ -43,15 +43,15 @@ export const user = {
       }
 
       const existingUser = await db
-      .select()
-      .from(userTable)
-      .where(
-        or(
-          eq(userTable.username, input.username),
-          eq(userTable.email, input.username)
-        )
-      );
-    
+        .select()
+        .from(userTable)
+        .where(
+          or(
+            eq(userTable.username, input.username),
+            eq(userTable.email, input.username),
+          ),
+        );
+
       if (!existingUser || existingUser.length <= 0) {
         throw new ActionError({
           code: "UNAUTHORIZED",
@@ -85,7 +85,7 @@ export const user = {
         sessionCookie.value,
         sessionCookie.attributes,
       );
-      // console.log
+
       return { session };
     },
   }),
@@ -128,8 +128,8 @@ export const user = {
         .where(
           or(
             eq(userTable.username, input.username),
-            eq(userTable.email, input.email)
-          )
+            eq(userTable.email, input.email),
+          ),
         );
 
       if (existingUser.length > 0) {
@@ -163,11 +163,15 @@ export const user = {
   logOut: defineAction({
     accept: "form",
     handler: async (_, ctx: NewApiContext) => {
+      console.log(ctx.locals.session, "ctx.locals.session");
+
       if (!ctx.locals.session) {
-        return new Response(null, {
-          status: 401,
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+          message: "user is not found",
         });
       }
+
       await lucia.invalidateSession(ctx.locals.session.id);
 
       const sessionCookie = lucia.createBlankSessionCookie();
@@ -177,7 +181,7 @@ export const user = {
         sessionCookie.attributes,
       );
 
-      return true;
+      return { success: true, message: "Logged out successfully." };
     },
   }),
 
@@ -256,8 +260,6 @@ export const user = {
             gt(userTable.reset_token_expiry, new Date()),
           ),
         );
-
-      console.log("user", user);
 
       if (!user || user.length === 0 || !user[0]) {
         throw new ActionError({

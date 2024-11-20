@@ -28,8 +28,6 @@ export const oauthGoogleAuth = {
       state: z.string(),
     }),
     handler: async (input, context: ActionAPIContext): Promise<boolean> => {
-      console.log("hello");
-
       // const code = context.url.searchParams.get("code");
       // const state = context.url.searchParams.get("state");
       const code = input.code;
@@ -64,14 +62,13 @@ export const oauthGoogleAuth = {
         });
       }
 
-      console.log(tokens);
+
       const claims = decodeIdToken(tokens.idToken()) as GoogleIdTokenClaims;
-      console.log(claims);
       const googleUserId = claims.sub;
-      // const email = claims.email;
+      const email = claims.email;
       const username = claims.name;
 
-      if (!username || !googleUserId) {
+      if (!username || !googleUserId || !email) {
         throw new ActionError({
           code: "BAD_REQUEST",
           message: "Something went wrong",
@@ -89,7 +86,7 @@ export const oauthGoogleAuth = {
 
       const user = await createUser(
         googleUserId,
-        "hackritik000@gmail.com",
+        email,
         username,
       ); // Replace with actual DB query
       const sessionToken = generateSessionToken();
@@ -106,7 +103,7 @@ export const oauthGoogleAuth = {
       _,
       context: ActionAPIContext,
     ): Promise<{ redirectUrl: string }> => {
-      console.log("Initiating Google login");
+
 
       // Generate state and code verifier
       const state = generateState();
@@ -115,6 +112,7 @@ export const oauthGoogleAuth = {
       // Generate Google OAuth authorization URL
       const url = google.createAuthorizationURL(state, codeVerifier, [
         "openid",
+        "email",
         "profile",
       ]);
 
@@ -141,16 +139,22 @@ export const oauthGoogleAuth = {
   logout: defineAction({
     handler: async (_, context: ActionAPIContext) => {
       if (context.locals.session === null) {
-        return new Response(null, {
+        return {
           status: 401,
-        });
+          message: "Unauthorized: No active session found",
+        };
       }
+  
       await invalidateSession(context.locals.session.id);
       deleteSessionTokenCookie(context);
-      return new Response(null, {
+  
+      // Return a plain object indicating successful logout
+      return {
         status: 200,
-        headers: { Location: "/login" },
-      });
+        message: "Logout successful",
+        redirectUrl: "/login", // Add this if needed on the client side
+      };
     },
   }),
+  
 };

@@ -85,7 +85,7 @@ export function setSessionTokenCookie(
   });
 }
 
-export function deleteSessionTokenCookie(context: APIContext): void {
+export function deleteSessionTokenCookie(context: ActionAPIContext): void {
   context.cookies.set("session", "", {
     httpOnly: true,
     path: "/",
