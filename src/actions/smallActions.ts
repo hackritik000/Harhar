@@ -80,16 +80,12 @@ export const smallActions = {
     handler: async (_, ctx) => {
       console.log("--------------out------------------");
       for (const [cat, subcat] of Object.entries(cats)) {
-        console.log(cat);
-        console.log(subcat);
-        // key
-        // db select cat
-        // cat.id
-        //
-        // for subcat .length
-        // db inset cat.id subcat
-        // db get categories
-        //
+        await db
+          .insert(subcategories)
+          .values({ subcategory:45 });
+        console.log(cat, "cat");
+        console.log(subcat, "subCat");
+        console.log("--------------------------------");
       }
     },
   }),
