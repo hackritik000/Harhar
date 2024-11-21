@@ -10,21 +10,36 @@ export default async function createUser(
 ): Promise<User> {
   const userId = generateIdFromEntropySize(10);
   // Insert the new user and return the inserted user data
-  const user = await db
-    .insert(users)
-    .values({ id: userId, googleId, email, username })
-    .returning({
-      id: users.id,
-      googleId: users.googleId,
-      email: users.email,
-      username: users.username,
-    });
+  const finduser = await db.select().from(users).where(eq(users.email, email));
+  let user;
+  if (!finduser) {
+    user = await db
+      .insert(users)
+      .values({ id: userId, googleId, email, username })
+      .returning({
+        id: users.id,
+        googleId: users.googleId,
+        email: users.email,
+        username: users.username,
+      });
+  } else {
+    user = await db
+      .update(users)
+      .set({ googleId })
+      .where(eq(users.email, email))
+      .returning({
+        id: users.id,
+        googleId: users.googleId,
+        email: users.email,
+        username: users.username,
+      });
+  }
 
   if (!user || !user[0]) {
     throw new Error("Unexpected error");
   }
 
-  return user[0];
+  return user;
 }
 
 export async function getUserFromGoogleId(

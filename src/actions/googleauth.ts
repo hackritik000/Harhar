@@ -2,9 +2,6 @@
 import { decodeIdToken, generateCodeVerifier, generateState } from "arctic";
 import { google } from "@/lib/oauth";
 import {
-  generateSessionToken,
-  createSession,
-  setSessionTokenCookie,
   invalidateSession,
   deleteSessionTokenCookie,
 } from "@/lib/server/session";
@@ -19,6 +16,7 @@ import createUser, {
   type GoogleIdTokenClaims,
 } from "@/lib/server/user";
 import { z } from "astro:schema";
+import { lucia } from "@/lib/auth";
 // Define the OAuth action
 export const oauthGoogleAuth = {
   callback: defineAction({
@@ -62,7 +60,6 @@ export const oauthGoogleAuth = {
         });
       }
 
-
       const claims = decodeIdToken(tokens.idToken()) as GoogleIdTokenClaims;
       const googleUserId = claims.sub;
       const email = claims.email;
@@ -75,23 +72,22 @@ export const oauthGoogleAuth = {
         });
       }
 
-      const existingUser = await getUserFromGoogleId(googleUserId); // Replace with actual DB query
+      let existingUser = await getUserFromGoogleId(googleUserId); // Replace with actual DB query
 
-      if (existingUser !== null) {
-        const sessionToken = generateSessionToken();
-        const session = await createSession(sessionToken, existingUser.id);
-        setSessionTokenCookie(context, sessionToken, session.expiresAt);
-        return true;
+      if (!existingUser) {
+        existingUser = await createUser(googleUserId, email, username); // Replace with actual DB query
       }
 
-      const user = await createUser(
-        googleUserId,
-        email,
-        username,
-      ); // Replace with actual DB query
-      const sessionToken = generateSessionToken();
-      const session = await createSession(sessionToken, user.id);
-      setSessionTokenCookie(context, sessionToken, session.expiresAt);
+      const session = await lucia.createSession(existingUser.id, {});
+      const sessionCookie = lucia.createSessionCookie(session.id);
+      context.cookies.set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes,
+      );
+      // const sessionToken = generateSessionToken();
+      // const session = await createSession(sessionToken, existingUser.id);
+      // setSessionTokenCookie(context, sessionToken, session.expiresAt);
       return true;
     },
   }),
@@ -103,8 +99,6 @@ export const oauthGoogleAuth = {
       _,
       context: ActionAPIContext,
     ): Promise<{ redirectUrl: string }> => {
-
-
       // Generate state and code verifier
       const state = generateState();
       const codeVerifier = generateCodeVerifier();
@@ -144,10 +138,10 @@ export const oauthGoogleAuth = {
           message: "Unauthorized: No active session found",
         };
       }
-  
+
       await invalidateSession(context.locals.session.id);
       deleteSessionTokenCookie(context);
-  
+
       // Return a plain object indicating successful logout
       return {
         status: 200,
@@ -156,5 +150,4 @@ export const oauthGoogleAuth = {
       };
     },
   }),
-  
 };
