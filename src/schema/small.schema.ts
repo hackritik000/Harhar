@@ -15,7 +15,7 @@ export const catagories = pgTable("catagories", {
 
 export const subcategories = pgTable("subcategories", {
   id: serial("id").primaryKey().notNull(),
-  subcategory: serial("subcategory").notNull(),
+  subcategory: varchar("subcategory", { length: 100 }).notNull(),
   categoryId: serial("category_id")
     .notNull()
     .references(() => catagories.id),
