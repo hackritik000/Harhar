@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="star">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="border">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+</div>
+<script src="./stars2.ts"></script>
+<style>
+  .container {
+    position: relative;
+    display: flex;
+    div {
+      display: flex;
+      span {
+        --starPosition: 50%;
+        --star-shape: polygon(
+          50% 4%,
+          61% 39%,
+          98% 39%,
+          68% 61%,
+          79% 95%,
+          50% 74%,
+          21% 95%,
+          32% 61%,
+          2% 39%,
+          39% 39%
+        );
+        /* background: yellow; */
+        background-image: linear-gradient(to right, yellow 50%, black 50%);
+        background-size: 200% 100%;
+        background-position-x: var(--starPosition);
+        width: 1em;
+        height: 1em;
+        clip-path: var(--star-shape);
+      }
+      &.border {
+        position: absolute;
+        z-index: -1;
+        span {
+          background: black;
+          scale: 1.1;
+        }
+      }
+    }
+  }
+</style>
