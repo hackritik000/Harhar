@@ -1,20 +1,25 @@
-<div class="container">
-  <div class="star">
+---
+const { ratingValue } = Astro.props;
+---
+
+<div>3</div>
+<div class="showcontainer">
+  <div data-rating={ratingValue} class="star">
     <span></span><span></span><span></span><span></span><span></span>
   </div>
   <div class="border">
     <span></span><span></span><span></span><span></span><span></span>
   </div>
 </div>
-<script src="./stars2.ts"></script>
+<script src="./ShowStar.ts"></script>
 <style>
-  .container {
+  .showcontainer {
     position: relative;
     display: flex;
     div {
       display: flex;
       span {
-        --starPosition: 50%;
+        --starPosition: 100%;
         --star-shape: polygon(
           50% 4%,
           61% 39%,
